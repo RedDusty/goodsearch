@@ -51,6 +51,8 @@ export function getPreview(
         ctx.getContext("2d")!.drawImage(image, 0, 0);
         webpImage.src = ctx.toDataURL("image/webp");
         Object.assign(previewFile, {
+          size:
+            ((webpImage.src.length - "data:image/webp;base64,".length) * 3) / 4,
           source: webpImage.src,
           height: image.height,
           width: image.width,

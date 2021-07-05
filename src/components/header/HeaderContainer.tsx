@@ -3,7 +3,7 @@ import SearchIcon from "../icons/SearchIcon";
 
 function HeaderContainer() {
   return (
-    <div className="w-full h-12 bg-gray-100 shadow-lg sticky top-0 flex items-center">
+    <div className="w-full h-12 bg-gray-100 shadow-lg sticky top-0 flex items-center z-40">
       <button className="btn-pr-small ml-2">
         <NavLink to={"/"}>Main</NavLink>
       </button>

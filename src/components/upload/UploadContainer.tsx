@@ -41,27 +41,25 @@ function UploadContainer() {
 
   if (file && previewFile?.source) {
     render = (
-      <div>
-        <Preview
-          setFile={setFile}
-          setPreviewFile={setPreviewFile}
-          previewFile={previewFile}
-          setAlbum={setAlbum}
-          album={album}
-          setTags={setTags}
-          tags={tags}
-        />
-      </div>
+      <Preview
+        setFile={setFile}
+        setPreviewFile={setPreviewFile}
+        previewFile={previewFile}
+        setAlbum={setAlbum}
+        album={album}
+        setTags={setTags}
+        tags={tags}
+      />
     );
   }
   if (file && previewFile?.source === undefined) {
-    render = (
-      <div>
-        <LoadingIcon size={200} />
-      </div>
-    );
+    render = <LoadingIcon size={200} />;
   }
 
-  return <div>{render}</div>;
+  return (
+    <div className="w-full h-full flex justify-center items-center">
+      {render}
+    </div>
+  );
 }
 export default UploadContainer;

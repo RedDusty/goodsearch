@@ -1,6 +1,7 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import { fb, uploadImage } from "../../firebase";
-import { fileType } from "../../types";
+import React, { Dispatch, SetStateAction, useContext, useState } from "react";
+import { uploadImage } from "../../firebase";
+import { fileType, userType } from "../../types";
+import { UserContext } from "../../UserProvider";
 
 const Preview: React.FC<{
   setFile: Dispatch<SetStateAction<File | undefined>>;
@@ -20,7 +21,8 @@ const Preview: React.FC<{
   tags,
 }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
-  const [scale, setScale] = useState<number>(1);
+  const [fileName, setFileName] = useState<string>("File name");
+  const user: userType = useContext(UserContext);
   const renderAlbum: JSX.Element =
     album.length !== 0 ? (
       <div className="flex bg-pink-100 p-0.5 items-center rounded-lg mx-2 my-1">
@@ -69,64 +71,10 @@ const Preview: React.FC<{
     fileSize = `${(previewFile.size / 1000 / 1000).toFixed(2)} mb`;
   }
   return (
-    <div>
-      <div className={`flex flex-col fixed left-0 bottom-4 ${isFullscreen ? 'z-0' : 'z-50'}`}>
+    <div className="w-full h-full">
+      <div className="w-full flex justify-center flex-wrap items-center mt-6">
         <button
-          className="text-4xl my-2 font-bold bg-blue-200 hover:bg-blue-300 focus:bg-blue-400 text-blue-700 hover:text-blue-800 focus:text-blue-900 fill-current w-8 h-8 p-2 box-content mx-4 flex justify-center items-center rounded-full"
-          onClick={() => {
-            if (scale < 4.95) {
-              setScale(scale + 0.05);
-            }
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            className="w-full h-full"
-          >
-            <path d="M13 10h-3v3h-2v-3h-3v-2h3v-3h2v3h3v2zm8.172 14l-7.387-7.387c-1.388.874-3.024 1.387-4.785 1.387-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9c0 1.761-.514 3.398-1.387 4.785l7.387 7.387-2.828 2.828zm-12.172-8c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
-          </svg>
-        </button>
-        <button
-          className="text-4xl my-2 font-bold bg-blue-200 hover:bg-blue-300 focus:bg-blue-400 text-blue-700 hover:text-blue-800 focus:text-blue-900 fill-current w-8 h-8 p-2 box-content mx-4 flex justify-center items-center rounded-full"
-          onClick={() => {
-            setScale(1);
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            className="w-full h-full"
-          >
-            <path d="M13 8h-8v-2h8v2zm0 4h-8v-2h8v2zm8.172 12l-7.387-7.387c-1.388.874-3.024 1.387-4.785 1.387-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9c0 1.761-.514 3.398-1.387 4.785l7.387 7.387-2.828 2.828zm-12.172-8c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
-          </svg>
-        </button>
-        <button
-          className="text-4xl my-2 font-bold bg-blue-200 hover:bg-blue-300 focus:bg-blue-400 text-blue-700 hover:text-blue-800 focus:text-blue-900 fill-current w-8 h-8 p-2 box-content mx-4 flex justify-center items-center rounded-full"
-          onClick={() => {
-            if (scale > 0.05) {
-              setScale(scale - 0.05);
-            }
-          }}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            className="w-full h-full"
-          >
-            <path d="M13 10h-8v-2h8v2zm8.172 14l-7.387-7.387c-1.388.874-3.024 1.387-4.785 1.387-4.971 0-9-4.029-9-9s4.029-9 9-9 9 4.029 9 9c0 1.761-.514 3.398-1.387 4.785l7.387 7.387-2.828 2.828zm-12.172-8c3.859 0 7-3.14 7-7s-3.141-7-7-7-7 3.14-7 7 3.141 7 7 7z" />
-          </svg>
-        </button>
-      </div>
-      <div className="w-full flex justify-center items-center mt-6">
-        <button
-          className="btn-pr-small"
+          className="btn-pr shadow-none sm:shadow-xl"
           onClick={() => {
             setFile(undefined);
             setPreviewFile(undefined);
@@ -134,32 +82,50 @@ const Preview: React.FC<{
         >
           Clear
         </button>
-        <button className="btn-pr-small ml-4" onClick={() => {
-          uploadImage(album, previewFile, tags, fb)
-        }}>Create</button>
-        <button className="btn-pr-small ml-4">Download {fileSize}</button>
+        <button
+          className="btn-pr ml-4  shadow-none sm:shadow-xl"
+          onClick={() => {
+            uploadImage(album, previewFile, tags, user);
+          }}
+        >
+          Create
+        </button>
+        <button className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg">
+          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">
+            Download
+          </p>
+        </button>
       </div>
-      <div
-        className="bg-blue-100 my-4 pb-2 w-full flex flex-col items-center shadow-xl border-t-2 border-solid border-blue-200"
-        style={{
-          transform: `${isFullscreen ? "unset" : "scale(" + scale + ")"}`,
-          marginTop: `${isFullscreen ? "unset" : (scale * 50 + 'px')}`
-        }}
-      >
+      <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
+        <p className="break-all">{"Name: " + fileName + ".webp "}</p>
+        <p>{"Size: " + fileSize}</p>
+      </div>
+      <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
+        <input
+          type="text"
+          className="bg-white w-full h-full outline-none p-2 rounded-md"
+          maxLength={50}
+          placeholder="Set file name here - 50 symbols"
+          onChange={(e: React.FormEvent<HTMLInputElement>) => {
+            setFileName(e.currentTarget.value.substring(0, 50));
+          }}
+        />
+      </div>
+      <div className="bg-blue-100 w-full sm:w-auto my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 py-2 sm:px-2 flex flex-col items-center sm:rounded-lg sm:shadow-xl border-t-2 border-solid border-blue-200">
         <div className="flex justify-center items-center">
           <div
             className={`${
               isFullscreen
-                ? "w-screen h-screen bg-black bg-opacity-90 fixed z-40 top-0 left-0 flex justify-center items-center"
+                ? "w-screen h-screen bg-black fixed z-40 top-0 left-0 flex justify-center items-center"
                 : "w-full h-full"
             }`}
           >
             <img
               src={previewFile?.source}
               alt=""
-              className={`z-50 ${
+              className={`${
                 isFullscreen
-                  ? "w-full h-full object-contain"
+                  ? "w-full h-full object-contain z-50"
                   : "relative w-auto h-auto"
               }`}
               data-fullscreen="false"
@@ -170,13 +136,25 @@ const Preview: React.FC<{
           </div>
         </div>
         <div className="w-full my-2 flex items-center justify-evenly">
-          <div className="w-2/3 border-t border-solid border-blue-700"></div>
+          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
+          <img
+            src={user.photoURL}
+            alt=""
+            className="w-10 h-10 profileImage cursor-default"
+          />
+          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+            {(user.displayName?.length || 0) >= 15
+              ? user.displayName?.substring(0, 15) + "..."
+              : user.displayName}
+          </p>
+          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
           <p className="text-blue-900">{tags.length}/25</p>
+          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
         <div className="flex flex-col w-full">
           <input
             type="text"
-            className="w-full h-10 outline-none px-2"
+            className="w-full sm:w-64 lg:w-2/4 2xl:w-2/5 h-10 outline-none px-2 mx-auto sm:rounded-md"
             placeholder="[Optional] Tags - 25 symbols/tags"
             onChange={(e: React.FormEvent<HTMLInputElement>) => {
               if (e.currentTarget.value.length > 26) {
@@ -221,8 +199,8 @@ const Preview: React.FC<{
           />
           <input
             type="text"
-            className="w-full h-10 outline-none mt-2 px-2"
-            placeholder="[Required] Album - 1 word, 50 symbols"
+            className="w-full sm:w-64 lg:w-2/4 2xl:w-2/5 h-10 outline-none mt-2 sm:mx-auto px-2 sm:rounded"
+            placeholder="[Required] Tag - 1 tag, 50 symbols"
             onChange={(e: React.FormEvent<HTMLInputElement>) => {
               if (e.currentTarget.value.length > 50) {
                 e.preventDefault();
@@ -246,6 +224,7 @@ const Preview: React.FC<{
           </div>
         </div>
       </div>
+      <div className="w-full h-4"></div>
     </div>
   );
 };

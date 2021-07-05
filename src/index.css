@@ -16,10 +16,21 @@ body,
 #root,
 .App {
   width: 100%;
+  min-height: 100%;
   height: 100%;
   display: flow-root;
   padding: 0;
   margin: 0;
+  overflow: auto;
+}
+
+.profileImage {
+  border-radius: 100%;
+  transition: 0.25s ease-in-out;
+}
+
+.profileImage:hover {
+  border-radius: 6px;
 }
 
 body {
