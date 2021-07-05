@@ -1,7 +1,9 @@
 import React, { Dispatch, SetStateAction, useContext, useState } from "react";
 import { uploadImage } from "../../firebase";
+import { renameImage } from "../../scripts";
 import { fileType, userType } from "../../types";
 import { UserContext } from "../../UserProvider";
+import LoadingIcon from "../icons/LoadingIcon";
 
 const Preview: React.FC<{
   setFile: Dispatch<SetStateAction<File | undefined>>;
@@ -21,12 +23,14 @@ const Preview: React.FC<{
   tags,
 }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
-  const [fileName, setFileName] = useState<string>("File name");
+  const [fileName, setFileName] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const user: userType = useContext(UserContext);
+  const [isLoading, setLoading] = useState<boolean>(false);
   const renderAlbum: JSX.Element =
     album.length !== 0 ? (
-      <div className="flex bg-pink-100 p-0.5 items-center rounded-lg mx-2 my-1">
-        <p className="text-pink-900">{album}</p>
+      <div className="flex bg-pink-100 p-1 items-center rounded-lg mx-2 my-1">
+        <p className="text-pink-900 text-xl font-medium">{album}</p>
         <button
           className="outline-none ont-medium text-pink-900  ml-2 select-none bg-pink-50 hover:bg-pink-300 hover:text-pink-600 focus:text-pink-300 focus:bg-pink-700 rounded-full w-5 h-5 flex items-center justify-center"
           onClick={() => {
@@ -42,10 +46,10 @@ const Preview: React.FC<{
   const renderTags: JSX.Element[] = tags.map((tag: string, i: number) => {
     return (
       <div
-        className="flex bg-blue-50 p-0.5 items-center rounded-lg mx-2 my-1"
+        className="flex bg-blue-50 p-1 items-center rounded-lg mx-2 my-1"
         key={i}
       >
-        <p className="text-blue-900">{tag}</p>
+        <p className="text-blue-900 text-lg">{tag}</p>
         <button
           className="outline-none ont-medium text-blue-900  ml-2 select-none bg-blue-50 hover:bg-blue-300 hover:text-blue-600 focus:text-blue-300 focus:bg-blue-700 rounded-full w-5 h-5 flex items-center justify-center"
           onClick={() => {
@@ -72,12 +76,24 @@ const Preview: React.FC<{
   }
   return (
     <div className="w-full h-full">
+      <div
+        className={`fixed w-screen h-screen bg-black bg-opacity-50 top-0 left-0 justify-center items-center ${
+          isLoading ? "flex" : "hidden"
+        }`}
+        style={{ zIndex: 60 }}
+      >
+        <LoadingIcon size={250} />
+      </div>
       <div className="w-full flex justify-center flex-wrap items-center mt-6">
         <button
           className="btn-pr shadow-none sm:shadow-xl"
           onClick={() => {
-            setFile(undefined);
-            setPreviewFile(undefined);
+            if (!isLoading) {
+              setFile(undefined);
+              setPreviewFile(undefined);
+            } else {
+              setError("Error: uploading card");
+            }
           }}
         >
           Clear
@@ -85,7 +101,16 @@ const Preview: React.FC<{
         <button
           className="btn-pr ml-4  shadow-none sm:shadow-xl"
           onClick={() => {
-            uploadImage(album, previewFile, tags, user);
+            if (album.length <= 50 && album.length > 0) {
+              if (!isLoading) {
+                setLoading(true);
+                uploadImage(album, previewFile, tags, user);
+              } else {
+                setError("Error: uploading card");
+              }
+            } else {
+              setError("Error: empty [required] tag");
+            }
           }}
         >
           Create
@@ -96,22 +121,32 @@ const Preview: React.FC<{
           </p>
         </button>
       </div>
+      {error.length !== 0 ? (
+        <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-red-300 text-red-800 font-medium p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
+          <p>{error}</p>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
-        <p className="break-all">{"Name: " + fileName + ".webp "}</p>
+        <p className="break-all">{`Name: ${fileName}_id######.webp`}</p>
         <p>{"Size: " + fileSize}</p>
       </div>
       <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
         <input
           type="text"
-          className="bg-white w-full h-full outline-none p-2 rounded-md"
+          className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
           maxLength={50}
           placeholder="Set file name here - 50 symbols"
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
             setFileName(e.currentTarget.value.substring(0, 50));
+            if (e.currentTarget.value.length <= 50) {
+              renameImage(previewFile, e.currentTarget.value.substring(0, 50));
+            }
           }}
         />
       </div>
-      <div className="bg-blue-100 w-full sm:w-auto my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 py-2 sm:px-2 flex flex-col items-center sm:rounded-lg sm:shadow-xl border-t-2 border-solid border-blue-200">
+      <div className="w-full sm:w-auto my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 py-2 sm:px-2 flex flex-col items-center">
         <div className="flex justify-center items-center">
           <div
             className={`${
@@ -135,7 +170,7 @@ const Preview: React.FC<{
             />
           </div>
         </div>
-        <div className="w-full my-2 flex items-center justify-evenly">
+        <div className="w-full my-4 flex items-center justify-evenly">
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
           <img
             src={user.photoURL}
@@ -151,73 +186,78 @@ const Preview: React.FC<{
           <p className="text-blue-900">{tags.length}/25</p>
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
-        <div className="flex flex-col w-full">
-          <input
-            type="text"
-            className="w-full sm:w-64 lg:w-2/4 2xl:w-2/5 h-10 outline-none px-2 mx-auto sm:rounded-md"
-            placeholder="[Optional] Tags - 25 symbols/tags"
-            onChange={(e: React.FormEvent<HTMLInputElement>) => {
-              if (e.currentTarget.value.length > 26) {
-                e.preventDefault();
-                e.currentTarget.classList.add("text-blue-900");
-              } else {
-                e.currentTarget.classList.remove("text-blue-900");
-              }
-            }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === " " || e.code === "Space") {
-                const dTags: string[] = tags;
-                e.currentTarget.value
-                  .match(/[^ -][^ ]*/g)
-                  ?.map((value: string, i: number) => {
-                    let canPush: boolean = true;
-                    for (let checker = 0; checker < dTags.length; checker++) {
-                      if (
-                        value.charAt(0).toUpperCase() +
-                          value.substring(1).toLowerCase() ===
-                        dTags[checker]
-                      ) {
-                        canPush = false;
+        <div className="flex flex-col w-full md:w-4/5">
+          <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
+            <input
+              type="text"
+              className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
+              placeholder="[Optional] Tags - 25 symbols/tags"
+              onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                if (e.currentTarget.value.length > 26) {
+                  e.preventDefault();
+                  e.currentTarget.classList.add("text-blue-900");
+                } else {
+                  e.currentTarget.classList.remove("text-blue-900");
+                }
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === " " || e.code === "Space") {
+                  const dTags: string[] = tags;
+                  e.currentTarget.value
+                    .match(/[^ -][^ ]*/g)
+                    ?.map((value: string, i: number) => {
+                      let canPush: boolean = true;
+                      for (let checker = 0; checker < dTags.length; checker++) {
+                        if (
+                          value.charAt(0).toUpperCase() +
+                            value.substring(1).toLowerCase() ===
+                          dTags[checker]
+                        ) {
+                          canPush = false;
+                        }
                       }
-                    }
-                    if (canPush) {
-                      dTags.push(
-                        value.charAt(0).toUpperCase() +
-                          value.substring(1).toLowerCase()
-                      );
-                    }
-                  });
-                dTags.splice(25, dTags.length - 25);
-                setTags([...dTags]);
-              }
-            }}
-            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === " " || e.code === "Space") {
-                e.currentTarget.value = "";
-              }
-            }}
-          />
-          <input
-            type="text"
-            className="w-full sm:w-64 lg:w-2/4 2xl:w-2/5 h-10 outline-none mt-2 sm:mx-auto px-2 sm:rounded"
-            placeholder="[Required] Tag - 1 tag, 50 symbols"
-            onChange={(e: React.FormEvent<HTMLInputElement>) => {
-              if (e.currentTarget.value.length > 50) {
-                e.preventDefault();
-              } else {
-                const value = e.currentTarget.value.match(/[^ -][^ ]*/g);
-                setAlbum(
-                  (value || [""])[0].charAt(0).toUpperCase() +
-                    (value || [""])[0].substring(1).toLowerCase()
-                );
-              }
-            }}
-            onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-              if (e.key === " " || e.code === "Space") {
-                e.preventDefault();
-              }
-            }}
-          />
+                      if (canPush) {
+                        dTags.push(
+                          value.charAt(0).toUpperCase() +
+                            value.substring(1).toLowerCase()
+                        );
+                      }
+                    });
+                  dTags.splice(25, dTags.length - 25);
+                  setTags([...dTags]);
+                }
+              }}
+              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === " " || e.code === "Space") {
+                  e.currentTarget.value = "";
+                }
+              }}
+            />
+          </div>
+          <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
+            <input
+              type="text"
+              className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
+              placeholder="[Required] Tag - 1 tag, 50 symbols"
+              onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                if (e.currentTarget.value.length > 50) {
+                  e.preventDefault();
+                } else {
+                  const value = e.currentTarget.value.match(/[^ -][^ ]*/g);
+                  setAlbum(
+                    (value || [""])[0].charAt(0).toUpperCase() +
+                      (value || [""])[0].substring(1).toLowerCase()
+                  );
+                }
+              }}
+              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === " " || e.code === "Space") {
+                  e.preventDefault();
+                }
+              }}
+            />
+          </div>
+
           <div className="flex flex-wrap">
             {renderAlbum}
             {renderTags}

@@ -9,6 +9,7 @@ export type cardType = {
   userName: string;
   userPhoto: string;
   userUID: string;
+  album: string;
 };
 
 export type fileType = {
@@ -33,4 +34,11 @@ export type albumType = {
   name: string;
   count: number;
   image: string;
+  id: number;
+  cardsId: number[];
+};
+
+export type cardTypeShort = {
+  id: number;
+  fileURL: string;
 };

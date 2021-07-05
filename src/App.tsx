@@ -3,11 +3,12 @@ import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import LoadingIcon from "./components/icons/LoadingIcon";
 import StartPage from "./components/StartPage";
+const AlbumPage = lazy(() => import("./components/albums/AlbumPage"));
 const AllAlbums = lazy(() => import("./components/AllAlbums"));
 const Upload = lazy(() => import("./components/Upload"));
+const Card = lazy(() => import("./components/Card"));
 
 function App() {
-
   return (
     <div className="App">
       <Suspense fallback={<LoadingIcon size={500} />}>
@@ -20,6 +21,12 @@ function App() {
           </Route>
           <Route exact path="/all">
             <AllAlbums />
+          </Route>
+          <Route exact path="/album/:name">
+            <AlbumPage />
+          </Route>
+          <Route exact path="/card/:id">
+            <Card />
           </Route>
         </Switch>
       </Suspense>
