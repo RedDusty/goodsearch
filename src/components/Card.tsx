@@ -28,6 +28,8 @@ const Card = () => {
     getter();
   }, [window.location.pathname.substring(6)]);
 
+  document.title = card.album
+
   let renderTags: JSX.Element[] = [];
 
   if (card.infoTags) {

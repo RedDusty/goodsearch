@@ -19,6 +19,8 @@ function Upload() {
     return <Redirect to={redirect} />;
   }
 
+  document.title = "Hornylib upload"
+
   return (
     <div className="w-full h-full flex flex-col items-center">
       <HeaderContainer />

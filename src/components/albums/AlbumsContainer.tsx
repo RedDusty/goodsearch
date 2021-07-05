@@ -7,6 +7,7 @@ function AlbumsContainer() {
   const [albumsCount, setAlbumCount] = useState<number>(0);
   const [albums, setAlbums] = useState<albumType[]>([]);
 
+
   useEffect(() => {
     const dAlbums = albums;
     const getter = async () => {
@@ -19,6 +20,8 @@ function AlbumsContainer() {
 
     return () => {};
   }, [albumsCount]);
+
+  document.title = "Hornylib albums"
 
   const renderAlbums = albums?.map((album: albumType) => {
     return (

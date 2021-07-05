@@ -25,6 +25,8 @@ function AlbumPage() {
     return () => {};
   }, [window.location.pathname.substring(7), cardsCount]);
 
+  document.title = album || 'Hornylib album'
+
   const renderCards = cards?.map((card: cardTypeShort) => {
     return (
       <NavLink

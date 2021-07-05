@@ -47,7 +47,7 @@ const StartPage = () => {
   }
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <p className="text-blue-500 hover:text-pink-400 font-medium italic text-6xl my-4">
+      <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">
         Hornylib
       </p>
       <div className="bg-blue-100 shadow-xl w-4/5 md:w-2/4 min-w-min m-4 rounded-2xl box-content flex justify-center items-center">

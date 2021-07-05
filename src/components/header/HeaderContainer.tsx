@@ -5,7 +5,9 @@ function HeaderContainer() {
   return (
     <div className="w-full h-12 bg-gray-100 shadow-lg sticky top-0 flex items-center z-40">
       <button className="btn-pr-small ml-2">
-        <NavLink to={"/"}>Main</NavLink>
+        <NavLink to={"/"} onClick={() => {
+          document.title = "Hornylib"
+        }}>Main</NavLink>
       </button>
       <div className="bg-blue-100 w-full m-2 rounded-2xl box-content flex justify-center items-center">
         <input
