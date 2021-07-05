@@ -27,6 +27,7 @@ const Preview: React.FC<{
   const [error, setError] = useState<string>("");
   const user: userType = useContext(UserContext);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [isAnon, setAnon] = useState<boolean>(false);
   const renderAlbum: JSX.Element =
     album.length !== 0 ? (
       <div className="flex bg-pink-100 p-1 items-center rounded-lg mx-2 my-1">
@@ -104,7 +105,7 @@ const Preview: React.FC<{
             if (album.length <= 50 && album.length > 0) {
               if (!isLoading) {
                 setLoading(true);
-                uploadImage(album, previewFile, tags, user);
+                uploadImage(album, previewFile, tags, user, isAnon);
               } else {
                 setError("Error: uploading card");
               }
@@ -115,11 +116,14 @@ const Preview: React.FC<{
         >
           Create
         </button>
-        <button className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg">
+        <a
+          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
+          href={previewFile.source}
+        >
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">
             Download
           </p>
-        </button>
+        </a>
       </div>
       {error.length !== 0 ? (
         <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-red-300 text-red-800 font-medium p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
@@ -172,16 +176,59 @@ const Preview: React.FC<{
         </div>
         <div className="w-full my-4 flex items-center justify-evenly">
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <img
-            src={user.photoURL}
-            alt=""
-            className="w-10 h-10 profileImage cursor-default"
-          />
-          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-            {(user.displayName?.length || 0) >= 15
-              ? user.displayName?.substring(0, 15) + "..."
-              : user.displayName}
-          </p>
+          <div className="flex items-center">
+            <button
+              className="btn-pr cursor-pointer flex items-center"
+              onClick={() => {
+                setAnon(!isAnon);
+              }}
+            >
+              <p className="font-medium">Anonymously?</p>
+              <div className="ml-2 fill-current">
+                {isAnon ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+                  </svg>
+                )}
+              </div>
+            </button>
+          </div>
+          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
+          {isAnon ? (
+            <></>
+          ) : (
+            <img
+              src={user.photoURL}
+              alt=""
+              className="w-10 h-10 profileImage cursor-default"
+            />
+          )}
+          {isAnon ? (
+            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">
+              Anon
+            </p>
+          ) : (
+            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+              {(user.displayName?.length || 0) >= 15
+                ? user.displayName?.substring(0, 15) + "..."
+                : user.displayName}
+            </p>
+          )}
+
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
           <p className="text-blue-900">{tags.length}/25</p>
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
@@ -198,33 +245,36 @@ const Preview: React.FC<{
                   e.currentTarget.classList.add("text-blue-900");
                 } else {
                   e.currentTarget.classList.remove("text-blue-900");
-                }
-              }}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === " " || e.code === "Space") {
-                  const dTags: string[] = tags;
-                  e.currentTarget.value
-                    .match(/[^ -][^ ]*/g)
-                    ?.map((value: string, i: number) => {
-                      let canPush: boolean = true;
-                      for (let checker = 0; checker < dTags.length; checker++) {
-                        if (
-                          value.charAt(0).toUpperCase() +
-                            value.substring(1).toLowerCase() ===
-                          dTags[checker]
+                  if (/\s/.test(e.currentTarget.value)) {
+                    const dTags: string[] = tags;
+                    e.currentTarget.value
+                      .match(/[^ -][^ ]*/g)
+                      ?.map((value: string, i: number) => {
+                        let canPush: boolean = true;
+                        for (
+                          let checker = 0;
+                          checker < dTags.length;
+                          checker++
                         ) {
-                          canPush = false;
+                          if (
+                            value.charAt(0).toUpperCase() +
+                              value.substring(1).toLowerCase() ===
+                            dTags[checker]
+                          ) {
+                            canPush = false;
+                          }
                         }
-                      }
-                      if (canPush) {
-                        dTags.push(
-                          value.charAt(0).toUpperCase() +
-                            value.substring(1).toLowerCase()
-                        );
-                      }
-                    });
-                  dTags.splice(25, dTags.length - 25);
-                  setTags([...dTags]);
+                        if (canPush) {
+                          dTags.push(
+                            value.charAt(0).toUpperCase() +
+                              value.substring(1).toLowerCase()
+                          );
+                        }
+                      });
+                    dTags.splice(25, dTags.length - 25);
+                    setTags([...dTags]);
+                    e.currentTarget.value = "";
+                  }
                 }
               }}
               onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {

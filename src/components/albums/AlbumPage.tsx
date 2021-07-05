@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { getCards } from "../../firebase";
 import { cardTypeShort } from "../../types";
+import HeaderContainer from "../header/HeaderContainer";
 
 function AlbumPage() {
   const [album, setAlbum] = useState<string>();
@@ -31,7 +32,7 @@ function AlbumPage() {
     return (
       <NavLink
         to={"/card/" + card.id}
-        className="w-56 h-32 m-4 font-medium flex flex-col justify-center items-center rounded-xl"
+        className="w-40 h-24 sm:w-56 sm:h-32 m-4 font-medium flex flex-col justify-center items-center rounded-xl"
         style={{
           backgroundSize: "cover",
           backgroundImage: `url(${card.fileURL})`,
@@ -42,6 +43,7 @@ function AlbumPage() {
   });
   return (
     <div className="h-full w-full">
+      <HeaderContainer />
       <div className="flex flex-wrap">{renderCards}</div>
       <button
         onClick={() => {

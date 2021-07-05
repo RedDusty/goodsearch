@@ -7,16 +7,16 @@ const AlbumPage = lazy(() => import("./components/albums/AlbumPage"));
 const AllAlbums = lazy(() => import("./components/AllAlbums"));
 const Upload = lazy(() => import("./components/Upload"));
 const Card = lazy(() => import("./components/Card"));
-const NotFound = lazy(() => import("./components/NotFound"))
+const NotFound = lazy(() => import("./components/NotFound"));
 
 function App() {
-  document.title = "Hornylib"
+  document.title = "Hornylib";
   return (
     <div className="App">
       <Suspense fallback={<LoadingIcon size={500} />}>
         <Switch>
           <Route exact path="/">
-            <StartPage />;
+            <StartPage />
           </Route>
           <Route exact path="/upload">
             <Upload />

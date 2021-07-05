@@ -7,7 +7,7 @@ export const UserContext = createContext({
   photoURL: undefined,
   uid: undefined,
   banned: false,
-  cardsID: []
+  cardsID: [],
 });
 export default (props) => {
   const [user, setUser] = useState({
@@ -15,22 +15,24 @@ export default (props) => {
     photoURL: undefined,
     uid: undefined,
     banned: false,
-    cardsID: []
+    cardsID: [],
   });
   useEffect(() => {
     auth.onAuthStateChanged(async (cloudUser) => {
-      const displayName = cloudUser ? cloudUser.displayName || undefined : undefined;
+      const displayName = cloudUser
+        ? cloudUser.displayName || undefined
+        : undefined;
       const photoURL = cloudUser ? cloudUser.photoURL || undefined : undefined;
       const uid = cloudUser ? cloudUser.uid : undefined;
       const userData = await getLoginUser(cloudUser);
-      const banned = userData.banned
-      const cardsID = userData.cardsID
+      const banned = userData.banned;
+      const cardsID = userData.cardsID;
       setUser({
         displayName,
         photoURL,
         uid,
         banned,
-        cardsID
+        cardsID,
       });
     });
   }, []);

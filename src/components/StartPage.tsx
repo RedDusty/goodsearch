@@ -7,13 +7,13 @@ import SearchIcon from "./icons/SearchIcon";
 
 const StartPage = () => {
   const user: userType = useContext(UserContext);
-  let renderAccess: JSX.Element = <></>;
+  let renderAccess: JSX.Element = <></>
   let renderUpload: JSX.Element = (
     <Link to="/upload" className="btn-pr ml-4">
       Upload
     </Link>
   );
-  let renderProfile: JSX.Element = <></>;
+  let renderProfile: JSX.Element = <></>
 
   if (user.uid) {
     if (user.banned) {
@@ -69,7 +69,14 @@ const StartPage = () => {
         </Link>
         {renderAccess}
       </div>
-    {renderProfile}
+      {!user.uid ? (
+        <p className="mt-4 w-full sm:w-auto bg-pink-100 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
+          Don't forget to enable cookies if you can't login!
+        </p>
+      ) : (
+        <></>
+      )}
+      {renderProfile}
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { NavLink } from "react-router-dom";
 import { getCard } from "../firebase";
 import { cardType } from "../types";
 import HeaderContainer from "./header/HeaderContainer";
@@ -28,7 +29,7 @@ const Card = () => {
     getter();
   }, [window.location.pathname.substring(6)]);
 
-  document.title = card.album
+  document.title = card.album;
 
   let renderTags: JSX.Element[] = [];
 
@@ -59,11 +60,22 @@ const Card = () => {
     <div className="w-full h-full">
       <HeaderContainer />
       <div className="w-full flex justify-center flex-wrap items-center mt-6">
-        <button className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg">
+        <a
+          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
+          href={card.fileURL}
+        >
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">
             Download
           </p>
-        </button>
+        </a>
+        <NavLink
+          to={"/album/" + card.album}
+          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
+        >
+          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">
+            Back to {card.album} album
+          </p>
+        </NavLink>
       </div>
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
         <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>
@@ -95,16 +107,24 @@ const Card = () => {
         </div>
         <div className="w-full my-4 flex items-center justify-evenly">
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <img
-            src={card.userPhoto}
-            alt=""
-            className="w-10 h-10 profileImage cursor-default"
-          />
-          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-            {(card.userName.length || 0) >= 15
-              ? card.userName.substring(0, 15) + "..."
-              : card.userName}
-          </p>
+          {card.userPhoto !== "Anon" ? (
+            <>
+              <img
+                src={card.userPhoto}
+                alt=""
+                className="w-10 h-10 profileImage cursor-default"
+              />
+              <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+                {(card.userName.length || 0) >= 15
+                  ? card.userName.substring(0, 15) + "..."
+                  : card.userName}
+              </p>
+            </>
+          ) : (
+            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">
+              Anon
+            </p>
+          )}
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
         <div className="flex flex-col w-full md:w-4/5">

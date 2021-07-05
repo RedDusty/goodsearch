@@ -27,7 +27,7 @@ function AlbumsContainer() {
     return (
       <NavLink
         to={"/album/" + album.name}
-        className="w-56 h-32 m-4 rounded-xl"
+        className="w-40 h-24 sm:w-56 sm:h-32 m-4 rounded-xl"
         style={{
           backgroundSize: "cover",
           backgroundImage: `url(${album.image})`,

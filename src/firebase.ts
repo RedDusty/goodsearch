@@ -13,7 +13,8 @@ export async function uploadImage(
   album: string = "unknown",
   file: fileType,
   tags: string[],
-  user: userType
+  user: userType,
+  anon: boolean
 ) {
   let lastCardId: number = 0;
   let imageURL: string = "";
@@ -90,6 +91,16 @@ export async function uploadImage(
     .child(album + "/" + file.name + "_" + lastCardId + ".webp")
     .getMetadata();
 
+  let anonUser = anon
+    ? {
+        userName: "Anon",
+        userPhoto: "Anon",
+      }
+    : {
+        userName: user.displayName || "Unknown",
+        userPhoto: user.photoURL || "",
+      };
+
   await firebase
     .firestore()
     .collection("cards")
@@ -102,8 +113,8 @@ export async function uploadImage(
       id: lastCardId,
       infoTags: tags,
       infoTime: new Date().getTime(),
-      userName: user.displayName || "Unknown",
-      userPhoto: user.photoURL || "",
+      userName: anonUser.userName,
+      userPhoto: anonUser.userPhoto,
       userUID: user.uid,
       album: album,
     } as cardType);
@@ -118,6 +129,8 @@ export async function uploadImage(
     .collection("users")
     .doc(user.uid)
     .update({ cardsID: newCardsId });
+
+  window.location.pathname = "/card/" + lastCardId;
 }
 
 export async function getLoginUser(user: userType) {
@@ -152,7 +165,7 @@ export async function getLoginUser(user: userType) {
         displayName: user.displayName,
         photoURL: user.photoURL,
         uid: user.uid,
-        cardsId: [],
+        cardsID: [],
       });
 
       return {
@@ -225,13 +238,13 @@ export async function getCards(limit: number, start: number, album: string) {
 export async function getCard(id: string) {
   let card: cardType = {} as cardType;
 
-  const getCard = await firebase.firestore().collection('cards').doc(id).get();
+  const getCard = await firebase.firestore().collection("cards").doc(id).get();
 
   const cardInfo = getCard.data() as cardType;
 
   card = cardInfo;
 
-  return card
+  return card;
 }
 
 export async function getUser(userCard: string) {
