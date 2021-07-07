@@ -54,7 +54,7 @@ export async function uploadImage(file: fileType, tags: string[], user: userType
         .firestore()
         .collection('albums')
         .doc(tag)
-        .update({ count: newCount, cardsId: newCardsId, name: imageURL } as albumType);
+        .update({ count: newCount, cardsId: newCardsId, image: imageURL } as albumType);
     }
   });
 
