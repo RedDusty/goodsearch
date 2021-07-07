@@ -1,39 +1,27 @@
-import {
-  albumType,
-  cardType,
-  cardTypeShort,
-  fileType,
-  userType,
-} from "./types";
-import firebase from "firebase/app";
-import "firebase/storage";
-import "firebase/firestore";
+import { albumType, cardType, cardTypeShort, fileType, tagsType, tagType, userType } from './types';
+import firebase from 'firebase/app';
+import 'firebase/storage';
+import 'firebase/firestore';
+import 'firebase/database';
 
-export async function uploadImage(
-  album: string = "unknown",
-  file: fileType,
-  tags: string[],
-  user: userType,
-  anon: boolean
-) {
+export async function uploadImage(file: fileType, tags: string[], user: userType, anon: boolean) {
   let lastCardId: number = 0;
-  let imageURL: string = "";
+  let imageURL: string = '';
 
-  const getLastCardId = await firebase
-    .firestore()
-    .collection("cards")
-    .orderBy("id", "desc")
-    .limit(1)
-    .get();
+  // get last id card
+
+  const getLastCardId = await firebase.firestore().collection('cards').orderBy('id', 'desc').limit(1).get();
 
   getLastCardId.forEach((doc) => {
     lastCardId = doc.data().id;
     lastCardId += 1;
   });
 
+  // store file
+
   const storageRef = firebase.storage().ref();
   const cardRef = storageRef.child(
-    album + "/" + file.name + "_" + lastCardId + ".webp"
+    tags[0] + "/" + file.name + "_" + lastCardId + ".webp"
   );
 
   const metadata = {
@@ -42,53 +30,40 @@ export async function uploadImage(
 
   await cardRef.putString(file.source, "data_url", metadata);
   imageURL = await storageRef
-    .child(album + "/" + file.name + "_" + lastCardId + ".webp")
+    .child(tags[0] + "/" + file.name + "_" + lastCardId + ".webp")
     .getDownloadURL();
 
-  const getAlbumList = await firebase
-    .firestore()
-    .collection("albums")
-    .doc(album)
-    .get();
-  const newCount: number = Number(getAlbumList?.data()?.count) + 1;
-  if (!getAlbumList.exists) {
-    let lastAlbumId: number = 0;
+  // check if album is exist
 
-    const getLastAlbumId = await firebase
-      .firestore()
-      .collection("albums")
-      .orderBy("id", "desc")
-      .limit(1)
-      .get();
+  tags.forEach(async (tag) => {
+    const getAlbumList = await firebase.firestore().collection('albums').doc(tag).get();
 
-    getLastAlbumId.forEach((doc) => {
-      lastAlbumId = doc.data().id;
-      lastAlbumId += 1;
-    });
-
-    await firebase
-      .firestore()
-      .collection("albums")
-      .doc(album)
-      .set({
-        id: lastAlbumId,
-        count: 1,
-        image: imageURL,
-        name: album,
-        cardsId: [lastCardId],
-      } as albumType);
-  } else {
-    const newCardsId: number[] = getAlbumList.data()?.cardsId;
-    newCardsId.push(lastCardId);
-    await firebase
-      .firestore()
-      .collection("albums")
-      .doc(album)
-      .update({ count: newCount, cardsId: newCardsId } as albumType);
-  }
+    const newCount: number = Number(getAlbumList?.data()?.count) + 1;
+    if (!getAlbumList.exists) {
+      await firebase
+        .firestore()
+        .collection('albums')
+        .doc(tag)
+        .set({
+          id: new Date().getTime(),
+          count: 1,
+          image: imageURL,
+          name: tag,
+          cardsId: [lastCardId]
+        } as albumType);
+    } else {
+      const newCardsId: number[] = getAlbumList.data()?.cardsId;
+      newCardsId.push(lastCardId);
+      await firebase
+        .firestore()
+        .collection('albums')
+        .doc(tag)
+        .update({ count: newCount, cardsId: newCardsId } as albumType);
+    }
+  });
 
   const getMetadata = await storageRef
-    .child(album + "/" + file.name + "_" + lastCardId + ".webp")
+    .child(tags[0] + "/" + file.name + "_" + lastCardId + ".webp")
     .getMetadata();
 
   let anonUser = anon
@@ -100,6 +75,8 @@ export async function uploadImage(
         userName: user.displayName || "Unknown",
         userPhoto: user.photoURL || "",
       };
+
+  // create document
 
   await firebase
     .firestore()
@@ -116,10 +93,9 @@ export async function uploadImage(
       userName: anonUser.userName,
       userPhoto: anonUser.userPhoto,
       userUID: user.uid,
-      album: album,
     } as cardType);
 
-  console.log(user);
+  // // add if to user cards id
 
   let newCardsId = user.cardsID;
   newCardsId.push(lastCardId);
@@ -135,21 +111,15 @@ export async function uploadImage(
 
 export async function getLoginUser(user: userType) {
   if (user !== null) {
-    const getUser = await firebase
-      .firestore()
-      .collection("users")
-      .doc(user.uid);
+    const getUser = await firebase.firestore().collection('users').doc(user.uid);
     const userInfo = await getUser.get();
     if (userInfo.exists) {
       const userData = userInfo.data() as userType;
 
-      if (
-        user.photoURL !== userData.photoURL ||
-        user.displayName !== userData.displayName
-      ) {
-        await firebase.firestore().collection("users").doc(user.uid).update({
+      if (user.photoURL !== userData.photoURL || user.displayName !== userData.displayName) {
+        await firebase.firestore().collection('users').doc(user.uid).update({
           displayName: user.displayName,
-          photoURL: user.photoURL,
+          photoURL: user.photoURL
         });
       }
       return {
@@ -157,15 +127,15 @@ export async function getLoginUser(user: userType) {
         cardsID: userData.cardsID,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        uid: user.uid,
+        uid: user.uid
       } as userType;
     } else {
-      await firebase.firestore().collection("users").doc(user.uid).set({
+      await firebase.firestore().collection('users').doc(user.uid).set({
         banned: false,
         displayName: user.displayName,
         photoURL: user.photoURL,
         uid: user.uid,
-        cardsID: [],
+        cardsID: []
       });
 
       return {
@@ -173,7 +143,7 @@ export async function getLoginUser(user: userType) {
         cardsID: [],
         displayName: user.displayName,
         photoURL: user.photoURL,
-        uid: user.uid,
+        uid: user.uid
       } as userType;
     }
   } else {
@@ -182,7 +152,7 @@ export async function getLoginUser(user: userType) {
       cardsID: [],
       displayName: undefined,
       photoURL: undefined,
-      uid: undefined,
+      uid: undefined
     } as userType;
   }
 }
@@ -190,13 +160,7 @@ export async function getLoginUser(user: userType) {
 export async function getAlbums(limit: number, start: number) {
   const albums: albumType[] = [];
 
-  const getAlbums = await firebase
-    .firestore()
-    .collection("albums")
-    .orderBy("id", "asc")
-    .limit(10)
-    .startAt(start)
-    .get();
+  const getAlbums = await firebase.firestore().collection('albums').orderBy('id', 'asc').limit(10).startAt(start).get();
 
   getAlbums.forEach((album) => {
     const AlbumInfo = album.data() as albumType;
@@ -204,7 +168,7 @@ export async function getAlbums(limit: number, start: number) {
     albums.push({
       count: AlbumInfo.count,
       image: AlbumInfo.image,
-      name: AlbumInfo.name,
+      name: AlbumInfo.name
     } as albumType);
   });
 
@@ -216,9 +180,9 @@ export async function getCards(limit: number, start: number, album: string) {
 
   const getCards = await firebase
     .firestore()
-    .collection("cards")
-    .where("album", "==", album)
-    .orderBy("id", "asc")
+    .collection('cards')
+    .where('album', '==', album)
+    .orderBy('id', 'asc')
     .limit(10)
     .startAt(start)
     .get();
@@ -228,7 +192,7 @@ export async function getCards(limit: number, start: number, album: string) {
 
     cards.push({
       fileURL: CardInfo.fileURL,
-      id: CardInfo.id,
+      id: CardInfo.id
     } as cardTypeShort);
   });
 
@@ -238,7 +202,7 @@ export async function getCards(limit: number, start: number, album: string) {
 export async function getCard(id: string) {
   let card: cardType = {} as cardType;
 
-  const getCard = await firebase.firestore().collection("cards").doc(id).get();
+  const getCard = await firebase.firestore().collection('cards').doc(id).get();
 
   const cardInfo = getCard.data() as cardType;
 
@@ -250,11 +214,7 @@ export async function getCard(id: string) {
 export async function getUser(userCard: string) {
   const user: userType = {} as userType;
 
-  const getUser = await firebase
-    .firestore()
-    .collection("users")
-    .doc(userCard)
-    .get();
+  const getUser = await firebase.firestore().collection('users').doc(userCard).get();
 
   const userInfo = getUser.data() as userType;
   user.displayName = userInfo.displayName;

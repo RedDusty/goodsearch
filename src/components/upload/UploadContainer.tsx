@@ -9,7 +9,6 @@ import { getPreview } from "../../scripts";
 function UploadContainer() {
   const [file, setFile] = useState<File>();
   const [previewFile, setPreviewFile] = useState<fileType>();
-  const [album, setAlbum] = useState<string>("");
   const [tags, setTags] = useState<string[]>([]);
 
   const { getRootProps, getInputProps, open } = useDropzone({
@@ -45,8 +44,6 @@ function UploadContainer() {
         setFile={setFile}
         setPreviewFile={setPreviewFile}
         previewFile={previewFile}
-        setAlbum={setAlbum}
-        album={album}
         setTags={setTags}
         tags={tags}
       />

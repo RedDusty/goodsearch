@@ -9,7 +9,6 @@ export type cardType = {
   userName: string;
   userPhoto: string;
   userUID: string;
-  album: string;
 };
 
 export type fileType = {
@@ -42,3 +41,9 @@ export type cardTypeShort = {
   id: number;
   fileURL: string;
 };
+
+export type tagsType = {
+  [key: string]: tagType[];
+};
+
+export type tagType = string;

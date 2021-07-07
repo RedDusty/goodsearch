@@ -9,41 +9,15 @@ const Preview: React.FC<{
   setFile: Dispatch<SetStateAction<File | undefined>>;
   setPreviewFile: Dispatch<SetStateAction<fileType | undefined>>;
   previewFile: fileType;
-  setAlbum: Dispatch<SetStateAction<string>>;
-  album: string;
   setTags: Dispatch<SetStateAction<string[]>>;
   tags: string[];
-}> = ({
-  setFile,
-  setPreviewFile,
-  previewFile,
-  setAlbum,
-  album,
-  setTags,
-  tags,
-}) => {
+}> = ({ setFile, setPreviewFile, previewFile, setTags, tags }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>("");
   const [error, setError] = useState<string>("");
   const user: userType = useContext(UserContext);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isAnon, setAnon] = useState<boolean>(false);
-  const renderAlbum: JSX.Element =
-    album.length !== 0 ? (
-      <div className="flex bg-pink-100 p-1 items-center rounded-lg mx-2 my-1">
-        <p className="text-pink-900 text-xl font-medium">{album}</p>
-        <button
-          className="outline-none ont-medium text-pink-900  ml-2 select-none bg-pink-50 hover:bg-pink-300 hover:text-pink-600 focus:text-pink-300 focus:bg-pink-700 rounded-full w-5 h-5 flex items-center justify-center"
-          onClick={() => {
-            setAlbum("");
-          }}
-        >
-          X
-        </button>
-      </div>
-    ) : (
-      <></>
-    );
   const renderTags: JSX.Element[] = tags.map((tag: string, i: number) => {
     return (
       <div
@@ -54,7 +28,6 @@ const Preview: React.FC<{
         <button
           className="outline-none ont-medium text-blue-900  ml-2 select-none bg-blue-50 hover:bg-blue-300 hover:text-blue-600 focus:text-blue-300 focus:bg-blue-700 rounded-full w-5 h-5 flex items-center justify-center"
           onClick={() => {
-            console.log("delete");
             const dTags: string[] = tags;
             dTags.splice(i, 1);
             setTags([...dTags]);
@@ -102,10 +75,10 @@ const Preview: React.FC<{
         <button
           className="btn-pr ml-4  shadow-none sm:shadow-xl"
           onClick={() => {
-            if (album.length <= 50 && album.length > 0) {
+            if (tags.length <= 15 && tags.length >= 3) {
               if (!isLoading) {
-                setLoading(true);
-                uploadImage(album, previewFile, tags, user, isAnon);
+                // setLoading(true);
+                uploadImage(previewFile, tags, user, isAnon);
               } else {
                 setError("Error: uploading card");
               }
@@ -230,7 +203,7 @@ const Preview: React.FC<{
           )}
 
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <p className="text-blue-900">{tags.length}/25</p>
+          <p className="text-blue-900">{tags.length}/15</p>
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
         <div className="flex flex-col w-full md:w-4/5">
@@ -238,7 +211,7 @@ const Preview: React.FC<{
             <input
               type="text"
               className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
-              placeholder="[Optional] Tags - 25 symbols/tags"
+              placeholder="[3 min] Tags - 25 symbols / 15 tags"
               onChange={(e: React.FormEvent<HTMLInputElement>) => {
                 if (e.currentTarget.value.length > 26) {
                   e.preventDefault();
@@ -284,34 +257,7 @@ const Preview: React.FC<{
               }}
             />
           </div>
-          <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
-            <input
-              type="text"
-              className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
-              placeholder="[Required] Tag - 1 tag, 50 symbols"
-              onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                if (e.currentTarget.value.length > 50) {
-                  e.preventDefault();
-                } else {
-                  const value = e.currentTarget.value.match(/[^ -][^ ]*/g);
-                  setAlbum(
-                    (value || [""])[0].charAt(0).toUpperCase() +
-                      (value || [""])[0].substring(1).toLowerCase()
-                  );
-                }
-              }}
-              onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === " " || e.code === "Space") {
-                  e.preventDefault();
-                }
-              }}
-            />
-          </div>
-
-          <div className="flex flex-wrap">
-            {renderAlbum}
-            {renderTags}
-          </div>
+          <div className="flex flex-wrap">{renderTags}</div>
         </div>
       </div>
       <div className="w-full h-4"></div>

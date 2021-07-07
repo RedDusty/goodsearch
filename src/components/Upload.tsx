@@ -15,9 +15,9 @@ function Upload() {
     }
   }, [user]);
 
-  if (redirect) {
-    return <Redirect to={redirect} />;
-  }
+  // if (redirect) {
+  //   return <Redirect to={redirect} />;
+  // }
 
   document.title = "Hornylib upload"
 

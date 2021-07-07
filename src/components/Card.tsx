@@ -29,19 +29,20 @@ const Card = () => {
     getter();
   }, [window.location.pathname.substring(6)]);
 
-  document.title = card.album;
+  document.title = card.infoTags[0];
 
   let renderTags: JSX.Element[] = [];
 
   if (card.infoTags) {
     renderTags = card.infoTags.map((tag: string, i: number) => {
       return (
-        <div
+        <NavLink
+          to={"/album/" + tag}
           className="flex bg-blue-50 p-1 items-center rounded-lg mx-2 my-1"
           key={i}
         >
           <p className="text-blue-900 text-lg">{tag}</p>
-        </div>
+        </NavLink>
       );
     });
   }
@@ -68,14 +69,6 @@ const Card = () => {
             Download
           </p>
         </a>
-        <NavLink
-          to={"/album/" + card.album}
-          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
-        >
-          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">
-            Back to {card.album} album
-          </p>
-        </NavLink>
       </div>
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
         <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>
@@ -128,12 +121,7 @@ const Card = () => {
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
         <div className="flex flex-col w-full md:w-4/5">
-          <div className="flex flex-wrap">
-            <div className="flex bg-pink-100 p-1 items-center rounded-lg mx-2 my-1">
-              <p className="text-pink-900 text-xl font-medium">{card.album}</p>
-            </div>
-            {renderTags}
-          </div>
+          <div className="flex flex-wrap">{renderTags}</div>
         </div>
       </div>
       <div className="w-full h-4"></div>
