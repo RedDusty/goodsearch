@@ -32,7 +32,7 @@ export type userType = {
 export type albumType = {
   name: string;
   count: number;
-  image: string;
+  image?: string;
   id: number;
   cardsId: number[];
 };
