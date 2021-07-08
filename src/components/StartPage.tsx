@@ -1,19 +1,19 @@
-import React, { useContext } from "react";
-import { Link } from "react-router-dom";
-import { logOut, signInWithGoogle } from "../fbConfig";
-import { userType } from "../types";
-import { UserContext } from "../UserProvider";
-import SearchIcon from "./icons/SearchIcon";
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { logOut, signInWithGoogle } from '../fbConfig';
+import { userType } from '../types';
+import { UserContext } from '../UserProvider';
+import SearchIcon from './icons/SearchIcon';
 
 const StartPage = () => {
   const user: userType = useContext(UserContext);
-  let renderAccess: JSX.Element = <></>
+  let renderAccess: JSX.Element = <></>;
   let renderUpload: JSX.Element = (
     <Link to="/upload" className="btn-pr ml-4">
       Upload
     </Link>
   );
-  let renderProfile: JSX.Element = <></>
+  let renderProfile: JSX.Element = <></>;
 
   if (user.uid) {
     if (user.banned) {
@@ -47,9 +47,7 @@ const StartPage = () => {
   }
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">
-        Hornylib
-      </p>
+      <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">Hornylib</p>
       <div className="bg-blue-100 shadow-xl w-4/5 md:w-2/4 min-w-min m-4 rounded-2xl box-content flex justify-center items-center">
         <input
           type="text"
@@ -64,11 +62,14 @@ const StartPage = () => {
         </button>
       </div>
       <div className="flex mt-4">
-        <Link to="/all" className="btn-pr">
-          Show all
+        <Link to="/albums" className="btn-pr">
+          Show all albums
         </Link>
-        {renderAccess}
+        <Link to="/cards" className="btn-pr ml-4">
+          Show all cards
+        </Link>
       </div>
+      <div className="flex mt-4">{renderAccess}</div>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-100 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
           Don't forget to enable cookies if you can't login!

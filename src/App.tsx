@@ -1,16 +1,17 @@
-import React, { lazy, Suspense } from "react";
-import { Route, Switch } from "react-router-dom";
-import "./App.css";
-import LoadingIcon from "./components/icons/LoadingIcon";
-import StartPage from "./components/StartPage";
-const AlbumPage = lazy(() => import("./components/albums/AlbumPage"));
-const AllAlbums = lazy(() => import("./components/AllAlbums"));
-const Upload = lazy(() => import("./components/Upload"));
-const Card = lazy(() => import("./components/Card"));
-const NotFound = lazy(() => import("./components/NotFound"));
+import React, { lazy, Suspense } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import './App.css';
+import AllCards from './components/AllCards';
+import LoadingIcon from './components/icons/LoadingIcon';
+import StartPage from './components/StartPage';
+const AlbumPage = lazy(() => import('./components/albums/AlbumPage'));
+const AllAlbums = lazy(() => import('./components/AllAlbums'));
+const Upload = lazy(() => import('./components/Upload'));
+const Card = lazy(() => import('./components/Card'));
+const NotFound = lazy(() => import('./components/NotFound'));
 
 function App() {
-  document.title = "Hornylib";
+  document.title = 'Hornylib';
   return (
     <div className="App">
       <Suspense fallback={<LoadingIcon size={500} />}>
@@ -21,8 +22,11 @@ function App() {
           <Route exact path="/upload">
             <Upload />
           </Route>
-          <Route exact path="/all">
+          <Route exact path="/albums">
             <AllAlbums />
+          </Route>
+          <Route exact path="/cards">
+            <AllCards />
           </Route>
           <Route exact path="/album/:name">
             <AlbumPage />

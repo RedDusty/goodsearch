@@ -147,10 +147,16 @@ export async function getLoginUser(user: userType) {
   }
 }
 
-export async function getAlbums(limit: number, start: number) {
+export async function getAlbums(limit: number, start: number | string) {
   const albums: albumType[] = [];
 
-  const getAlbums = await firebase.firestore().collection('albums').orderBy('id', 'asc').limit(10).startAt(start).get();
+  const getAlbums = await firebase
+    .firestore()
+    .collection('albums')
+    .orderBy('id', 'desc')
+    .startAfter(start)
+    .limit(10)
+    .get();
 
   getAlbums.forEach((album) => {
     const AlbumInfo = album.data() as albumType;
@@ -158,7 +164,8 @@ export async function getAlbums(limit: number, start: number) {
     albums.push({
       count: AlbumInfo.count,
       image: AlbumInfo.image,
-      name: AlbumInfo.name
+      name: AlbumInfo.name,
+      id: AlbumInfo.id
     } as albumType);
   });
 
@@ -169,8 +176,6 @@ export async function getAlbum(album: string) {
   const getCards = await firebase.firestore().collection('albums').doc(album).get();
 
   const cardInfo: albumType = getCards.data() as albumType;
-
-  console.log(cardInfo.cardsId);
 
   return cardInfo.cardsId;
 }
@@ -192,7 +197,11 @@ export async function getCards(queryId: number[]) {
     cards.push(cardInfo);
   });
 
-  return cards;
+  const sortedCards = cards.sort((a, b) => {
+    return a.id - b.id;
+  });
+
+  return sortedCards.reverse();
 }
 
 export async function getCard(id: string) {
@@ -218,4 +227,21 @@ export async function getUser(userCard: string) {
   user.uid = userInfo.uid;
 
   return user;
+}
+
+export async function getAllCards(limit: number, start: number | string) {
+  const cards: cardType[] = [];
+
+  const getDoc = await firebase.firestore().collection('cards').orderBy('id', 'desc').startAfter(start).limit(10).get();
+
+  console.log(getDoc.size);
+
+  getDoc.forEach((card) => {
+    const cardData: cardType = card.data() as cardType;
+    cards.push(cardData);
+  });
+
+  console.log(cards);
+
+  return cards;
 }

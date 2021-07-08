@@ -4,17 +4,19 @@ import { getAlbums } from '../../firebase';
 import { albumType } from '../../types';
 
 function AlbumsContainer() {
-  const [albumsCount, setAlbumCount] = useState<number>(0);
+  const [lastId, setLastId] = useState<number | string>('');
   const [isLoadedAlbums, setLoadedAlbums] = useState<boolean>(false);
   const [albums, setAlbums] = useState<albumType[]>([]);
+  const [update, setUpdate] = useState<number>(0);
 
   useEffect(() => {
     const dAlbums = albums;
     const getter = async () => {
-      const fbAlbums = await getAlbums(10, albumsCount);
+      const fbAlbums = await getAlbums(10, lastId);
       if (fbAlbums.length !== 0) {
         const concated = dAlbums?.concat(fbAlbums);
         setAlbums(concated);
+        setLastId(fbAlbums.slice(-1)[0].id);
       } else {
         setLoadedAlbums(true);
       }
@@ -23,7 +25,7 @@ function AlbumsContainer() {
     getter();
 
     return () => {};
-  }, [albumsCount]);
+  }, [update]);
 
   document.title = 'Hornylib albums';
 
@@ -34,16 +36,16 @@ function AlbumsContainer() {
         className="w-36 h-24 ss:w-40 sl:w-44 sm:h-32 md:w-56 xm:w-60 2xl:w-64 2xl:h-40 3xl:w-72 m-1 sl:m-2 md:m-3 sm:m-1 2xl:m-5 3xl:m-3 rounded-xl hoverBlockShadow"
         style={{
           backgroundSize: 'cover',
-          backgroundImage: `url(${album.image})`
+          backgroundImage: `url('${album.image}')`
         }}
-        key={`link${album.id}`}
+        key={`link${album.name}`}
       >
         <div
           className="w-full h-full bg-black text-white hover:text-blue-100 hover:bg-blue-800 font-medium bg-opacity-50 flex flex-col justify-center items-center rounded-xl hover:bg-opacity-25"
-          key={`div${album.id}`}
+          key={`div${album.name}`}
         >
-          <p key={`pname${album.id}`}>{album.name}</p>
-          <p key={`pcount${album.id}`}>{album.count}</p>
+          <p key={`pname${album.name}`}>{album.name}</p>
+          <p key={`pcount${album.name}`}>{album.count}</p>
         </div>
       </NavLink>
     );
@@ -58,8 +60,7 @@ function AlbumsContainer() {
       ) : (
         <button
           onClick={() => {
-            const newCount = albumsCount + 10;
-            setAlbumCount(newCount);
+            setUpdate(update + 1);
           }}
           className="btn-pr my-4"
         >
