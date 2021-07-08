@@ -5,6 +5,13 @@ import { fileType, userType } from '../../types';
 import { UserContext } from '../../UserProvider';
 import LoadingIcon from '../icons/LoadingIcon';
 
+function errorCreate(setError: React.Dispatch<React.SetStateAction<string>>, message: string) {
+  setError(message);
+  setTimeout(() => {
+    setError('');
+  }, 5000);
+}
+
 const Preview: React.FC<{
   setFile: Dispatch<SetStateAction<File | undefined>>;
   setPreviewFile: Dispatch<SetStateAction<fileType | undefined>>;
@@ -63,7 +70,7 @@ const Preview: React.FC<{
               setFile(undefined);
               setPreviewFile(undefined);
             } else {
-              setError('Error: uploading card');
+              errorCreate(setError, 'Error: uploading card');
             }
           }}
         >
@@ -77,15 +84,15 @@ const Preview: React.FC<{
                 setLoading(true);
                 uploadImage(previewFile, tags, user, isAnon);
               } else {
-                setError('Error: uploading card');
+                errorCreate(setError, 'Error: uploading card');
               }
             } else {
               if (tags.length > 15) {
-                setError('Error: 15 tags max');
+                errorCreate(setError, 'Error: 15 tags max');
               } else if (tags.length < 3) {
-                setError('Error: 3 min tags');
+                errorCreate(setError, 'Error: 3 min tags');
               } else {
-                setError('Error: undefined error');
+                errorCreate(setError, 'Error: undefined error');
               }
             }
           }}
@@ -100,8 +107,10 @@ const Preview: React.FC<{
         </a>
       </div>
       {error.length !== 0 ? (
-        <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-red-300 text-red-800 font-medium p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
-          <p>{error}</p>
+        <div className="w-full fixed z-50 sm:flex sm:justify-center select-none">
+          <div className="bg-red-300 text-red-800 font-medium p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
+            <p>{error}</p>
+          </div>
         </div>
       ) : (
         <></>
@@ -212,16 +221,16 @@ const Preview: React.FC<{
                                 dTags.push(tag);
                               }
                             } else {
-                              setError(`Error: can't start and end with double underscores (__)`);
+                              errorCreate(setError, `Error: can't start and end with double underscores (__)`);
                             }
                           } else {
-                            setError(`Error: can't contain a slash (/ \\)`);
+                            errorCreate(setError, `Error: can't contain a slash (/ \\)`);
                           }
                         } else {
-                          setError(`Error: can't contain double dots (..)`);
+                          errorCreate(setError, `Error: can't contain double dots (..)`);
                         }
                       } else {
-                        setError(`Error: can't start with a dot (.)`);
+                        errorCreate(setError, `Error: can't start with a dot (.)`);
                       }
                     });
                     dTags.splice(25, dTags.length - 25);
