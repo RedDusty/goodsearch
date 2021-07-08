@@ -197,14 +197,31 @@ const Preview: React.FC<{
                   if (/\s/.test(e.currentTarget.value)) {
                     const dTags: string[] = tags;
                     e.currentTarget.value.match(/[^ -][^ ]*/g)?.map((value: string, i: number) => {
-                      let canPush: boolean = true;
-                      for (let checker = 0; checker < dTags.length; checker++) {
-                        if (value.charAt(0).toUpperCase() + value.substring(1).toLowerCase() === dTags[checker]) {
-                          canPush = false;
+                      const tag = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+                      if (!/^\./.test(tag)) {
+                        if (!/\.{2,}/.test(tag)) {
+                          if (!/\/|\\/.test(tag)) {
+                            if (!/^__.*__/.test(tag)) {
+                              let canPush: boolean = true;
+                              for (let checker = 0; checker < dTags.length; checker++) {
+                                if (tag === dTags[checker]) {
+                                  canPush = false;
+                                }
+                              }
+                              if (canPush) {
+                                dTags.push(tag);
+                              }
+                            } else {
+                              setError(`Error: can't start and end with double underscores (__)`);
+                            }
+                          } else {
+                            setError(`Error: can't contain a slash (/ \\)`);
+                          }
+                        } else {
+                          setError(`Error: can't contain double dots (..)`);
                         }
-                      }
-                      if (canPush) {
-                        dTags.push(value.charAt(0).toUpperCase() + value.substring(1).toLowerCase());
+                      } else {
+                        setError(`Error: can't start with a dot (.)`);
                       }
                     });
                     dTags.splice(25, dTags.length - 25);
