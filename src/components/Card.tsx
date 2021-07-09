@@ -81,7 +81,7 @@ const Card: React.FC<{
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
             onClick={() => {
-              localStorage.setItem('uTagsTip', 'true');
+              localStorage.setItem('zoomImageTip', 'true');
               setTips({
                 start: tips.start,
                 uName: tips.uName,
