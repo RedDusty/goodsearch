@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getAlbum, getCards } from '../../firebase';
 import { cardTypeShort } from '../../types';
-import HeaderContainer from '../header/HeaderContainer';
 
 function AlbumPage() {
   const [album, setAlbum] = useState<string>();
@@ -53,7 +52,6 @@ function AlbumPage() {
   });
   return (
     <div className="h-full w-full">
-      <HeaderContainer />
       <div className="flex flex-wrap">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">

@@ -234,14 +234,70 @@ export async function getAllCards(limit: number, start: number | string) {
 
   const getDoc = await firebase.firestore().collection('cards').orderBy('id', 'desc').startAfter(start).limit(10).get();
 
-  console.log(getDoc.size);
-
   getDoc.forEach((card) => {
     const cardData: cardType = card.data() as cardType;
     cards.push(cardData);
   });
 
-  console.log(cards);
-
   return cards;
+}
+
+export async function getAlbumsBySearch(queryId: string) {
+  if (queryId === undefined) {
+    return [] as albumType[];
+  }
+  const getAlbums = await firebase
+    .firestore()
+    .collection('albums')
+    .where('name', '>=', queryId)
+    .where('name', '<=', queryId + '\uF7FF')
+    .get();
+
+  if (getAlbums.size === 0) {
+    return [] as albumType[];
+  }
+  const albums: albumType[] = [];
+
+  getAlbums.forEach((doc) => {
+    const dataInfo = doc.data() as albumType;
+    albums.push(dataInfo);
+  });
+
+  return albums;
+}
+
+export async function getCardsBySearch(queryTags: string[], start: number | string, limit: number) {
+  const cards: cardType[] = [];
+  console.log(queryTags);
+  
+
+  if (queryTags.length === 0) {
+    return [] as cardType[];
+  }
+
+  const getCards = await firebase
+    .firestore()
+    .collection('cards')
+    .where('infoTags', 'array-contains-any', queryTags.slice(0, 10))
+    .orderBy('id', 'desc')
+    .startAfter(start)
+    .limit(10)
+    .get();
+
+  if (getCards.size === 0) {
+    return [] as cardType[];
+  }
+
+  getCards.forEach((doc) => {
+    const cardInfo = doc.data() as cardType;
+    console.log(doc.data());
+    
+    cards.push(cardInfo);
+  });
+
+  const sortedCards = cards.sort((a, b) => {
+    return a.id - b.id;
+  });
+
+  return sortedCards.reverse();
 }

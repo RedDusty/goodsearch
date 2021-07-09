@@ -1,29 +1,22 @@
-import { NavLink } from "react-router-dom";
-import SearchIcon from "../icons/SearchIcon";
+import React from 'react';
+import MenuIcon from '../icons/MenuIcon';
 
-function HeaderContainer() {
+const HeaderContainer: React.FC<{ setIsOpen: React.Dispatch<React.SetStateAction<boolean>>; isOpen: boolean }> = ({
+  setIsOpen,
+  isOpen
+}) => {
   return (
-    <div className="w-full h-12 bg-gray-100 shadow-lg sticky top-0 flex items-center z-40">
-      <button className="btn-pr-small ml-2">
-        <NavLink to={"/"} onClick={() => {
-          document.title = "Hornylib"
-        }}>Main</NavLink>
-      </button>
-      <div className="bg-blue-100 w-full m-2 rounded-2xl box-content flex justify-center items-center">
-        <input
-          type="text"
-          className="w-full h-6 bg-gray-100 outline-none hover:bg-white focus:bg-white rounded-tl-lg rounded-bl-lg p-1 ml-2"
-          placeholder="Search..."
-        />
-        <div className="w-px h-8 border-solid border-l border-black"></div>
-        <button className="w-10 h-10 outline-none hover:bg-pink-200 focus:bg-pink-300 pl-1 rounded-tr-2xl rounded-br-2xl fill-current text-blue-400 hover:text-pink-600 focus:text-pink-700">
-          <div className="w-5 h-5 flex justify-center items-center">
-            <SearchIcon />
-          </div>
-        </button>
+    <button
+      className="absolute left-6 top-6 w-12 h-12 hover:bg-pink-300 hover:text-pink-900 bg-blue-300 text-blue-900 fill-current rounded-full p-2 z-30"
+      onClick={() => {
+        setIsOpen(!isOpen);
+      }}
+    >
+      <div className="w-full h-full flex justify-center items-center">
+        <MenuIcon />
       </div>
-    </div>
+    </button>
   );
-}
+};
 
 export default HeaderContainer;

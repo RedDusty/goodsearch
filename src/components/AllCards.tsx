@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getAllCards } from '../firebase';
 import { cardType } from '../types';
-import HeaderContainer from './header/HeaderContainer';
 
 function AllCards() {
   const [lastId, setLastId] = useState<number | string>('');
@@ -31,8 +30,6 @@ function AllCards() {
   document.title = 'Hornylib cards';
 
   const renderCards = cards?.map((card: cardType) => {
-    console.log(`url(${card.fileURL})`);
-
     return (
       <NavLink
         to={'/card/' + card.id}
@@ -46,25 +43,22 @@ function AllCards() {
     );
   });
   return (
-    <div>
-      <HeaderContainer />
-      <div className="w-full h-full">
-        <div className="flex flex-wrap ">{renderCards}</div>
-        {isLoadedCards ? (
-          <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
-            <p className="font-medium">All cards are loaded</p>
-          </div>
-        ) : (
-          <button
-            onClick={() => {
-              setUpdate(update + 1);
-            }}
-            className="btn-pr my-4"
-          >
-            <p>More</p>
-          </button>
-        )}
-      </div>
+    <div className="w-full h-full">
+      <div className="flex flex-wrap ">{renderCards}</div>
+      {isLoadedCards ? (
+        <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
+          <p className="font-medium">All cards are loaded</p>
+        </div>
+      ) : (
+        <button
+          onClick={() => {
+            setUpdate(update + 1);
+          }}
+          className="btn-pr my-4"
+        >
+          <p>More</p>
+        </button>
+      )}
     </div>
   );
 }

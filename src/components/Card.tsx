@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getCard } from '../firebase';
 import { cardType } from '../types';
-import HeaderContainer from './header/HeaderContainer';
 
 const Card = () => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
@@ -59,7 +58,6 @@ const Card = () => {
   }
   return (
     <div className="w-full h-full">
-      <HeaderContainer />
       <div className="w-full flex justify-center flex-wrap items-center mt-6">
         <a
           className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"

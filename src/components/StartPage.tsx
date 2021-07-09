@@ -1,17 +1,19 @@
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { logOut, signInWithGoogle } from '../fbConfig';
 import { userType } from '../types';
 import { UserContext } from '../UserProvider';
-import SearchIcon from './icons/SearchIcon';
+import StartPageSearch from './search/StartPageSearch';
 
-const StartPage = () => {
+const StartPage: React.FC<{ setSearchCards: React.Dispatch<React.SetStateAction<string>> }> = ({
+  setSearchCards
+}) => {
   const user: userType = useContext(UserContext);
   let renderAccess: JSX.Element = <></>;
   let renderUpload: JSX.Element = (
-    <Link to="/upload" className="btn-pr ml-4">
+    <NavLink to="/upload" className="btn-pr ml-4">
       Upload
-    </Link>
+    </NavLink>
   );
   let renderProfile: JSX.Element = <></>;
 
@@ -48,26 +50,14 @@ const StartPage = () => {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">Hornylib</p>
-      <div className="bg-blue-100 shadow-xl w-4/5 md:w-2/4 min-w-min m-4 rounded-2xl box-content flex justify-center items-center">
-        <input
-          type="text"
-          className="w-full h-8 bg-gray-100 outline-none hover:bg-white focus:bg-white rounded-xl p-2 m-2"
-          placeholder="Search..."
-        />
-        <div className="w-px h-10 border-solid border-l border-black"></div>
-        <button className="w-12 h-12 outline-none hover:bg-pink-200 focus:bg-pink-300 pl-2 rounded-tr-2xl rounded-br-2xl fill-current text-blue-400 hover:text-pink-600 focus:text-pink-700">
-          <div className="w-6 h-6">
-            <SearchIcon />
-          </div>
-        </button>
-      </div>
+      <StartPageSearch setSearchCards={setSearchCards} />
       <div className="flex mt-4">
-        <Link to="/albums" className="btn-pr">
+        <NavLink to="/albums" className="btn-pr">
           Show all albums
-        </Link>
-        <Link to="/cards" className="btn-pr ml-4">
+        </NavLink>
+        <NavLink to="/cards" className="btn-pr ml-4">
           Show all cards
-        </Link>
+        </NavLink>
       </div>
       <div className="flex mt-4">{renderAccess}</div>
       {!user.uid ? (

@@ -47,3 +47,9 @@ export type tagsType = {
 };
 
 export type tagType = string;
+
+export type querySearchType = {
+  id: number;
+  name: string;
+  count: number;
+};

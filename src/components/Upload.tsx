@@ -1,5 +1,4 @@
 import UploadContainer from "./upload/UploadContainer";
-import HeaderContainer from "./header/HeaderContainer";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../UserProvider";
 import { Redirect } from "react-router-dom";
@@ -23,7 +22,6 @@ function Upload() {
 
   return (
     <div className="w-full h-full flex flex-col items-center">
-      <HeaderContainer />
       <UploadContainer />
     </div>
   );
