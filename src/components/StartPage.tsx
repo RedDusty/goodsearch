@@ -89,8 +89,20 @@ const StartPage: React.FC<{
         <button
           className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
           onClick={() => {
+            setTips({
+              start: false,
+              uName: false,
+              uTags: false,
+              upload: false,
+              zoomImage: false,
+              tagsImage: false
+            });
             localStorage.setItem('startTip', 'false');
             localStorage.setItem('uploadTip', 'false');
+            localStorage.setItem('uTagsTip', 'false');
+            localStorage.setItem('uNameTip', 'false');
+            localStorage.setItem('zoomImageTip', 'false');
+            localStorage.setItem('tagsImageTip', 'false');
           }}
         >
           Reset tips
