@@ -77,7 +77,7 @@ const StartPageSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateA
           className="flex justify-center items-center w-12 h-12 outline-none hover:bg-pink-200 focus:bg-pink-300 pl-2 rounded-tr-2xl rounded-br-2xl fill-current text-blue-400 hover:text-pink-600 focus:text-pink-700"
           to={'/search'}
         >
-          <div className="w-6 h-6">
+          <div className="w-6 h-6 mr-1">
             <SearchIcon />
           </div>
         </NavLink>

@@ -1,13 +1,15 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { logOut, signInWithGoogle } from '../fbConfig';
-import { userType } from '../types';
+import { tipsType, userType } from '../types';
 import { UserContext } from '../UserProvider';
 import StartPageSearch from './search/StartPageSearch';
 
-const StartPage: React.FC<{ setSearchCards: React.Dispatch<React.SetStateAction<string>> }> = ({
-  setSearchCards
-}) => {
+const StartPage: React.FC<{
+  setSearchCards: React.Dispatch<React.SetStateAction<string>>;
+  setTips: React.Dispatch<React.SetStateAction<tipsType>>;
+  tips: tipsType;
+}> = ({ setSearchCards, setTips, tips }) => {
   const user: userType = useContext(UserContext);
   let renderAccess: JSX.Element = <></>;
   let renderUpload: JSX.Element = (
@@ -51,6 +53,28 @@ const StartPage: React.FC<{ setSearchCards: React.Dispatch<React.SetStateAction<
     <div className="flex flex-col justify-center items-center w-full h-full">
       <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">Hornylib</p>
       <StartPageSearch setSearchCards={setSearchCards} />
+      <div
+        className={`bg-green-200 text-green-800 w-full sl:w-auto font-medium text-lg py-2 px-4 flex justify-center flex-col sm:flex-row items-center sl:rounded-lg ${
+          tips.start ? 'hidden' : 'block'
+        }`}
+      >
+        <p>Try to find something or upload it yourself.</p>
+        <button
+          className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+          onClick={() => {
+            localStorage.setItem('startTip', 'true');
+            setTips({
+              start: true,
+              uName: tips.uName,
+              uTags: tips.uTags,
+              upload: tips.upload,
+              zoomImage: tips.zoomImage
+            });
+          }}
+        >
+          Close
+        </button>
+      </div>
       <div className="flex mt-4">
         <NavLink to="/albums" className="btn-pr">
           Show all albums
@@ -59,7 +83,18 @@ const StartPage: React.FC<{ setSearchCards: React.Dispatch<React.SetStateAction<
           Show all cards
         </NavLink>
       </div>
-      <div className="flex mt-4">{renderAccess}</div>
+      <div className="flex mt-4">
+        {renderAccess}
+        <button
+          className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+          onClick={() => {
+            localStorage.setItem('startTip', 'false');
+            localStorage.setItem('uploadTip', 'false');
+          }}
+        >
+          Reset tips
+        </button>
+      </div>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-100 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
           Don't forget to enable cookies if you can't login!

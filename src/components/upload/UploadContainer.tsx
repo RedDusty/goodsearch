@@ -1,18 +1,21 @@
-import { useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { fileType } from "../../types";
-import { Input } from "./Input";
-import LoadingIcon from "../icons/LoadingIcon";
-import Preview from "./Preview";
-import { getPreview } from "../../scripts";
+import { useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { fileType, tipsType } from '../../types';
+import { Input } from './Input';
+import LoadingIcon from '../icons/LoadingIcon';
+import Preview from './Preview';
+import { getPreview } from '../../scripts';
 
-function UploadContainer() {
+const UploadContainer: React.FC<{
+  setTips: React.Dispatch<React.SetStateAction<tipsType>>;
+  tips: tipsType;
+}> = ({ setTips, tips }) => {
   const [file, setFile] = useState<File>();
   const [previewFile, setPreviewFile] = useState<fileType>();
   const [tags, setTags] = useState<string[]>([]);
 
   const { getRootProps, getInputProps, open } = useDropzone({
-    accept: "image/*",
+    accept: 'image/*',
     onDrop: async (acceptedFiles: File[]) => {
       if (acceptedFiles[0].size > 16777216) {
         return <p>Too large!</p>;
@@ -23,18 +26,14 @@ function UploadContainer() {
     },
     multiple: false,
     noKeyboard: true,
-    noClick: true,
+    noClick: true
   });
 
   let render: JSX.Element = <div></div>;
 
   if (!file) {
     render = (
-      <Input
-        getInputProps={getInputProps}
-        getRootProps={getRootProps}
-        open={open}
-      />
+      <Input getInputProps={getInputProps} getRootProps={getRootProps} open={open} setTips={setTips} tips={tips} />
     );
   }
 
@@ -46,6 +45,8 @@ function UploadContainer() {
         previewFile={previewFile}
         setTags={setTags}
         tags={tags}
+        setTips={setTips}
+        tips={tips}
       />
     );
   }
@@ -53,10 +54,6 @@ function UploadContainer() {
     render = <LoadingIcon size={200} />;
   }
 
-  return (
-    <div className="w-full h-full flex justify-center items-center">
-      {render}
-    </div>
-  );
-}
+  return <div className="w-full h-full flex justify-center items-center">{render}</div>;
+};
 export default UploadContainer;

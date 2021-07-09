@@ -53,3 +53,11 @@ export type querySearchType = {
   name: string;
   count: number;
 };
+
+export type tipsType = {
+  start: boolean;
+  upload: boolean;
+  uTags: boolean;
+  uName: boolean;
+  zoomImage: boolean;
+};

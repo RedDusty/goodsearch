@@ -5,6 +5,7 @@ import HeaderContainer from './components/header/HeaderContainer';
 import ModalHeader from './components/header/ModalHeader';
 import LoadingIcon from './components/icons/LoadingIcon';
 import StartPage from './components/StartPage';
+import { tipsType } from './types';
 const AllCards = lazy(() => import('./components/AllCards'));
 const SearchedCards = lazy(() => import('./components/SearchedCards'));
 const AlbumPage = lazy(() => import('./components/albums/AlbumPage'));
@@ -16,14 +17,27 @@ const NotFound = lazy(() => import('./components/NotFound'));
 function App() {
   const [searchCards, setSearchCards] = useState<string>('');
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [tips, setTips] = useState<tipsType>({
+    start: Boolean(localStorage.getItem('startTip')) || false,
+    upload: Boolean(localStorage.getItem('uploadTip')) || false,
+    uTags: Boolean(localStorage.getItem('uTagsTip')) || false,
+    uName: Boolean(localStorage.getItem('uNameTip')) || false,
+    zoomImage: Boolean(localStorage.getItem('zoomImageTip')) || false
+  });
   document.title = 'Hornylib';
   return (
     <div className="App">
-      <ModalHeader setSearchCards={setSearchCards} isOpen={isOpen} setIsOpen={setIsOpen} searchCards={searchCards} />
+      <ModalHeader
+        setSearchCards={setSearchCards}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        searchCards={searchCards}
+        setTips={setTips}
+      />
       <Suspense fallback={<LoadingIcon size={500} />}>
         <Switch>
           <Route exact path="/">
-            <StartPage setSearchCards={setSearchCards} />
+            <StartPage setSearchCards={setSearchCards} setTips={setTips} tips={tips} />
           </Route>
           <Route exact path="/search">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
@@ -31,7 +45,7 @@ function App() {
           </Route>
           <Route exact path="/upload">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
-            <Upload />
+            <Upload setTips={setTips} tips={tips} />
           </Route>
           <Route exact path="/albums">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
@@ -47,7 +61,7 @@ function App() {
           </Route>
           <Route exact path="/card/:id">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
-            <Card />
+            <Card setTips={setTips} tips={tips}/>
           </Route>
           <Route>
             <NotFound />

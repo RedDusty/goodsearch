@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useContext, useState } from 'react';
 import { uploadImage } from '../../firebase';
 import { renameImage } from '../../scripts';
-import { fileType, userType } from '../../types';
+import { fileType, tipsType, userType } from '../../types';
 import { UserContext } from '../../UserProvider';
 import LoadingIcon from '../icons/LoadingIcon';
 
@@ -18,7 +18,9 @@ const Preview: React.FC<{
   previewFile: fileType;
   setTags: Dispatch<SetStateAction<string[]>>;
   tags: string[];
-}> = ({ setFile, setPreviewFile, previewFile, setTags, tags }) => {
+  setTips: React.Dispatch<React.SetStateAction<tipsType>>;
+  tips: tipsType;
+}> = ({ setFile, setPreviewFile, previewFile, setTags, tags, setTips, tips }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
   const [fileName, setFileName] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -119,6 +121,38 @@ const Preview: React.FC<{
         <p className="break-all">{`Name: ${fileName}_id######.webp`}</p>
         <p>{'Size: ' + fileSize}</p>
       </div>
+      <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center">
+        <div
+          className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg flex-col sm:flex-row py-2 px-4 flex justify-center items-center sm:rounded-lg ${
+            tips.uName ? 'hidden' : 'block'
+          }`}
+        >
+          <div className="flex justify-center items-start flex-col">
+            <p>Look, the size of your picture has become smaller, but the quality is the same, cool?</p>
+            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+            <p>You can click on the picture and zoom in on it. To exit click on it again.</p>
+            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+            <p>Maximum 50 characters. </p>
+            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+            <p>This is a required field.</p>
+          </div>
+          <button
+            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+            onClick={() => {
+              localStorage.setItem('uTagsTip', 'true');
+              setTips({
+                start: tips.start,
+                uName: true,
+                uTags: tips.uTags,
+                upload: tips.upload,
+                zoomImage: tips.zoomImage
+              });
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </div>
       <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
         <input
           type="text"
@@ -190,13 +224,45 @@ const Preview: React.FC<{
           <p className="text-blue-900">{tags.length}/15</p>
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
+        <div
+          className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg py-2 sm:mb-2 px-4 flex flex-col sm:flex-row justify-center items-center sm:rounded-lg ${
+            tips.uTags ? 'hidden' : 'block'
+          }`}
+        >
+          <div className="flex justify-center items-center flex-col">
+            {isAnon ? (
+              <p>Oh, and what are you ashamed of? ( ͡° ͜ʖ ͡°)</p>
+            ) : (
+              <p>You can upload card anonymously and no one will recognize you!</p>
+            )}
+            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+            <p>Minimum 3 tags and maximum 15. 25 characters per tag.</p>
+            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+            <p>This is a required field.</p>
+          </div>
+          <button
+            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+            onClick={() => {
+              localStorage.setItem('uTagsTip', 'true');
+              setTips({
+                start: tips.start,
+                uName: tips.uName,
+                uTags: true,
+                upload: tips.upload,
+                zoomImage: tips.zoomImage
+              });
+            }}
+          >
+            Close
+          </button>
+        </div>
         <div className="flex flex-col w-full md:w-4/5">
           <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
             <input
               type="text"
               className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
               maxLength={25}
-              placeholder="[3 min] Tags - 25 symbols / 15 tags"
+              placeholder="Write tags here..."
               onChange={(e: React.FormEvent<HTMLInputElement>) => {
                 if (e.currentTarget.value.length > 26) {
                   e.preventDefault();

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { getCard } from '../firebase';
-import { cardType } from '../types';
+import { cardType, tipsType } from '../types';
 
-const Card = () => {
+const Card: React.FC<{
+  setTips: React.Dispatch<React.SetStateAction<tipsType>>;
+  tips: tipsType;
+}> = ({ setTips, tips }) => {
   const [isFullscreen, setFullscreen] = useState<boolean>(false);
   const [card, setCard] = useState<cardType>({
     album: '',
@@ -65,6 +68,32 @@ const Card = () => {
         >
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Download</p>
         </a>
+      </div>
+      <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center">
+        <div
+          className={`bg-green-200 text-green-800 font-medium text-base sm:text-lg flex-col sm:flex-row py-2 px-4 flex justify-center items-center sm:rounded-lg ${
+            tips.zoomImage ? 'hidden' : 'block'
+          }`}
+        >
+          <div className="flex justify-center items-start flex-col">
+            <p>You can click on the picture and zoom in on it. To exit click on it again.</p>
+          </div>
+          <button
+            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+            onClick={() => {
+              localStorage.setItem('uTagsTip', 'true');
+              setTips({
+                start: tips.start,
+                uName: tips.uName,
+                uTags: tips.uTags,
+                upload: tips.upload,
+                zoomImage: true
+              });
+            }}
+          >
+            Close
+          </button>
+        </div>
       </div>
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
         <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { logOut, signInWithGoogle } from '../../fbConfig';
-import { userType } from '../../types';
+import { tipsType, userType } from '../../types';
 import { UserContext } from '../../UserProvider';
 import MenuIcon from '../icons/MenuIcon';
 import ModalSearch from './ModalSearch';
@@ -11,7 +11,8 @@ const ModalHeader: React.FC<{
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   searchCards: string;
-}> = ({ setSearchCards, isOpen, setIsOpen, searchCards }) => {
+  setTips: React.Dispatch<React.SetStateAction<tipsType>>;
+}> = ({ setSearchCards, isOpen, setIsOpen, searchCards, setTips }) => {
   const user: userType = useContext(UserContext);
   if (!isOpen) {
     return null;
@@ -61,7 +62,7 @@ const ModalHeader: React.FC<{
     );
   }
   return (
-    <div className="absolute bg-blue-100 border-b-2 sm:border-2 border-solid border-blue-400 w-full sm:w-auto sm:p-2 sm:rounded-lg flex flex-col justify-center sm:top-4 sm:left-4 z-40">
+    <div className="absolute bg-blue-100 border-b-2 sm:border-r-2 border-solid border-blue-400 w-full sm:w-auto sm:p-2 sm:rounded-br-lg flex flex-col justify-center z-40">
       <div className="flex mt-2 ml-2">
         <button
           className="w-12 h-12 hover:bg-pink-300 hover:text-pink-900 bg-blue-300 text-blue-900 fill-current rounded-full p-2"
@@ -86,14 +87,35 @@ const ModalHeader: React.FC<{
 
       <ModalSearch setSearchCards={setSearchCards} searchCards={searchCards} />
       <div className="flex flex-wrap mt-4">
-          <NavLink to="/albums" className="btn-pr ml-2 bg-blue-300">
-            Show all albums
-          </NavLink>
-          <NavLink to="/cards" className="btn-pr ml-4 bg-blue-300">
-            Show all cards
-          </NavLink>
+        <NavLink to="/albums" className="btn-pr ml-2 bg-blue-300">
+          Show all albums
+        </NavLink>
+        <NavLink to="/cards" className="btn-pr ml-4 bg-blue-300">
+          Show all cards
+        </NavLink>
       </div>
-      <div className="flex mt-4">{renderAccess}</div>
+      <div className="flex mt-4">
+        {renderAccess}
+        <button
+          className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+          onClick={() => {
+            setTips({
+              start: false,
+              uName: false,
+              uTags: false,
+              upload: false,
+              zoomImage: false
+            });
+            localStorage.setItem('startTip', 'false');
+            localStorage.setItem('uploadTip', 'false');
+            localStorage.setItem('uTagsTip', 'false');
+            localStorage.setItem('uNameTip', 'false');
+            localStorage.setItem('zoomImageTip', 'false');
+          }}
+        >
+          Reset tips
+        </button>
+      </div>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-200 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
           Don't forget to enable cookies if you can't login!
