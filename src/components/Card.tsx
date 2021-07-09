@@ -87,7 +87,8 @@ const Card: React.FC<{
                 uName: tips.uName,
                 uTags: tips.uTags,
                 upload: tips.upload,
-                zoomImage: true
+                zoomImage: true,
+                tagsImage: tips.tagsImage
               });
             }}
           >
@@ -132,6 +133,32 @@ const Card: React.FC<{
             <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
           )}
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
+        </div>
+
+        <div
+          className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg py-2 sm:mb-2 px-4 flex flex-col sm:flex-row justify-center items-center sm:rounded-lg ${
+            tips.tagsImage ? 'hidden' : 'block'
+          }`}
+        >
+          <div className="flex justify-center items-center flex-col">
+            <p>Click on any of these tags to view cards with that tag.</p>
+          </div>
+          <button
+            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+            onClick={() => {
+              localStorage.setItem('tagsImageTip', 'true');
+              setTips({
+                start: tips.start,
+                uName: tips.uName,
+                uTags: tips.uTags,
+                upload: tips.upload,
+                zoomImage: tips.zoomImage,
+                tagsImage: true
+              });
+            }}
+          >
+            Close
+          </button>
         </div>
         <div className="flex flex-col w-full md:w-4/5">
           <div className="flex flex-wrap">{renderTags}</div>

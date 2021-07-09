@@ -68,7 +68,8 @@ const StartPage: React.FC<{
               uName: tips.uName,
               uTags: tips.uTags,
               upload: tips.upload,
-              zoomImage: tips.zoomImage
+              zoomImage: tips.zoomImage,
+              tagsImage: tips.tagsImage
             });
           }}
         >

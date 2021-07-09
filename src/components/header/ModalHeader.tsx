@@ -104,13 +104,15 @@ const ModalHeader: React.FC<{
               uName: false,
               uTags: false,
               upload: false,
-              zoomImage: false
+              zoomImage: false,
+              tagsImage: false
             });
             localStorage.setItem('startTip', 'false');
             localStorage.setItem('uploadTip', 'false');
             localStorage.setItem('uTagsTip', 'false');
             localStorage.setItem('uNameTip', 'false');
             localStorage.setItem('zoomImageTip', 'false');
+            localStorage.setItem('tagsImageTip', 'false');
           }}
         >
           Reset tips

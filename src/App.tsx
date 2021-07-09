@@ -22,7 +22,8 @@ function App() {
     upload: Boolean(localStorage.getItem('uploadTip')) || false,
     uTags: Boolean(localStorage.getItem('uTagsTip')) || false,
     uName: Boolean(localStorage.getItem('uNameTip')) || false,
-    zoomImage: Boolean(localStorage.getItem('zoomImageTip')) || false
+    zoomImage: Boolean(localStorage.getItem('zoomImageTip')) || false,
+    tagsImage: Boolean(localStorage.getItem('tagsImageTip')) || false
   });
   document.title = 'Hornylib';
   return (
@@ -61,7 +62,7 @@ function App() {
           </Route>
           <Route exact path="/card/:id">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
-            <Card setTips={setTips} tips={tips}/>
+            <Card setTips={setTips} tips={tips} />
           </Route>
           <Route>
             <NotFound />

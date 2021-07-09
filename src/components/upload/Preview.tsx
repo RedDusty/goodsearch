@@ -145,7 +145,8 @@ const Preview: React.FC<{
                 uName: true,
                 uTags: tips.uTags,
                 upload: tips.upload,
-                zoomImage: tips.zoomImage
+                zoomImage: tips.zoomImage,
+                tagsImage: tips.tagsImage
               });
             }}
           >
@@ -249,7 +250,8 @@ const Preview: React.FC<{
                 uName: tips.uName,
                 uTags: true,
                 upload: tips.upload,
-                zoomImage: tips.zoomImage
+                zoomImage: tips.zoomImage,
+                tagsImage: tips.tagsImage
               });
             }}
           >
