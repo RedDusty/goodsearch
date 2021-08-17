@@ -35,7 +35,7 @@ function AlbumPage() {
     return () => {};
   }, [window.location.pathname.substring(7), cardsCount, cardArray]);
 
-  document.title = album || 'Hornylib album';
+  document.title = album || 'GoodSearch album';
 
   const renderCards = cards?.map((card: cardTypeShort) => {
     return (

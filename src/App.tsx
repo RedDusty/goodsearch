@@ -25,7 +25,7 @@ function App() {
     zoomImage: Boolean(localStorage.getItem('zoomImageTip')) || false,
     tagsImage: Boolean(localStorage.getItem('tagsImageTip')) || false
   });
-  document.title = 'Hornylib';
+  document.title = 'GoodSearch';
   return (
     <div className="App">
       <ModalHeader

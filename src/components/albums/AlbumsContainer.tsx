@@ -27,7 +27,7 @@ function AlbumsContainer() {
     return () => {};
   }, [update]);
 
-  document.title = 'Hornylib albums';
+  document.title = 'GoodSearch albums';
 
   const renderAlbums = albums?.map((album: albumType) => {
     return (

@@ -21,7 +21,7 @@ const Upload: React.FC<{
     return <Redirect to={redirect} />;
   }
 
-  document.title = 'Hornylib upload';
+  document.title = 'GoodSearch upload';
 
   return (
     <div className="w-full h-full flex flex-col items-center">

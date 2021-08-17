@@ -27,7 +27,7 @@ function AllCards() {
     return () => {};
   }, [update]);
 
-  document.title = 'Hornylib cards';
+  document.title = 'GoodSearch cards';
 
   const renderCards = cards?.map((card: cardType) => {
     return (

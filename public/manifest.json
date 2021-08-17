@@ -4,8 +4,8 @@
   "display": "standalone",
   "scope": "/",
   "start_url": "/",
-  "name": "Hornylib",
-  "short_name": "Hornylib",
+  "name": "GoodSearch",
+  "short_name": "GoodSearch",
   "description": "Horny pictures",
   "icons": [
     {

@@ -51,7 +51,7 @@ const StartPage: React.FC<{
   }
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">Hornylib</p>
+      <p className="text-blue-500 hover:text-pink-400 font-extrabold italic text-6xl my-4 startPageName">GoodSearch</p>
       <StartPageSearch setSearchCards={setSearchCards} />
       <div
         className={`bg-green-200 text-green-800 w-full sl:w-auto font-medium text-lg py-2 px-4 flex justify-center flex-col sm:flex-row items-center sl:rounded-lg ${

@@ -81,7 +81,7 @@ const Preview: React.FC<{
         <button
           className="btn-pr ml-4  shadow-none sm:shadow-xl"
           onClick={() => {
-            if (tags.length <= 15 && tags.length >= 3) {
+            if (tags.length <= 30 && tags.length >= 3) {
               if (!isLoading) {
                 setLoading(true);
                 uploadImage(previewFile, tags, user, isAnon);
@@ -89,8 +89,8 @@ const Preview: React.FC<{
                 errorCreate(setError, 'Error: uploading card');
               }
             } else {
-              if (tags.length > 15) {
-                errorCreate(setError, 'Error: 15 tags max');
+              if (tags.length > 30) {
+                errorCreate(setError, 'Error: 30 tags max');
               } else if (tags.length < 3) {
                 errorCreate(setError, 'Error: 3 min tags');
               } else {
@@ -222,7 +222,7 @@ const Preview: React.FC<{
           )}
 
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <p className="text-blue-900">{tags.length}/15</p>
+          <p className="text-blue-900">{tags.length}/30</p>
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
         </div>
         <div
@@ -237,7 +237,7 @@ const Preview: React.FC<{
               <p>You can upload card anonymously and no one will recognize you!</p>
             )}
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>Minimum 3 tags and maximum 15. 25 characters per tag.</p>
+            <p>Minimum 3 tags and maximum 30. 25 characters per tag.</p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
             <p>This is a required field.</p>
           </div>

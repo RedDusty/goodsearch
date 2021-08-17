@@ -23,7 +23,7 @@ const ModalHeader: React.FC<{
       className="btn-pr ml-2 bg-blue-300"
       to={'/upload'}
       onClick={() => {
-        document.title = 'Hornylib';
+        document.title = 'GoodSearch';
       }}
     >
       Upload
@@ -78,7 +78,7 @@ const ModalHeader: React.FC<{
           className="btn-pr ml-2 bg-blue-300"
           to={'/'}
           onClick={() => {
-            document.title = 'Hornylib';
+            document.title = 'GoodSearch';
           }}
         >
           Start page
