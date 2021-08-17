@@ -38,13 +38,12 @@ const Card: React.FC<{
   if (card.infoTags) {
     renderTags = card.infoTags.map((tag: string, i: number) => {
       return (
-        <NavLink
-          to={'/album/' + tag}
+        <div
           className="flex bg-blue-50 p-1 items-center rounded-lg mx-2 my-1 text-blue-900 text-lg hover:bg-pink-200 hover:text-pink-800"
           key={i}
         >
           <p>{tag}</p>
-        </NavLink>
+        </div>
       );
     });
   }

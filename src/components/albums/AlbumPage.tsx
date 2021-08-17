@@ -41,7 +41,7 @@ function AlbumPage() {
     return (
       <NavLink
         to={'/card/' + card.id}
-        className="w-36 h-24 ss:w-40 sl:w-44 sm:h-32 md:w-56 xm:w-60 2xl:w-64 2xl:h-40 3xl:w-72 m-2 sl:m-3 md:m-4 sm:m-2 2xl:m-6 3xl:m-4 rounded-xl hoverBlockShadow bg-gray-300"
+        className="w-32 h-24 ss:w-40 sl:w-40 sm:h-32 md:w-52 xm:w-60 2xl:w-64 2xl:h-40 3xl:w-72 m-1 sl:m-3 md:m-3 sm:m-2 2xl:m-2 3xl:m-2 rounded-xl hoverBlockShadow bg-gray-300"
         style={{
           backgroundSize: 'cover',
           backgroundImage: `url('${card.fileURL}')`
@@ -52,7 +52,7 @@ function AlbumPage() {
   });
   return (
     <div className="h-full w-full">
-      <div className="flex flex-wrap">{renderCards}</div>
+      <div className="flex flex-wrap w-full justify-center">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
           <p className="font-medium">Нет новых карт.</p>

@@ -220,7 +220,7 @@ export async function getCard(id: string) {
   const cardInfo = getCard.data() as cardType;
 
   card = cardInfo;
-
+  
   return card;
 }
 
