@@ -32,7 +32,7 @@ function AlbumsContainer() {
   const renderAlbums = albums?.map((album: albumType) => {
     return (
       <NavLink
-        to={'/album/' + album.name}
+        to={'/album/' + album.id}
         className="w-36 h-24 ss:w-40 sl:w-44 sm:h-32 md:w-56 xm:w-60 2xl:w-64 2xl:h-40 3xl:w-72 m-1 sl:m-2 md:m-3 sm:m-1 2xl:m-5 3xl:m-3 rounded-xl hoverBlockShadow"
         style={{
           backgroundSize: 'cover',

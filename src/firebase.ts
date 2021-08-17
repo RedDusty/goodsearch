@@ -173,11 +173,19 @@ export async function getAlbums(limit: number, start: number | string) {
 }
 
 export async function getAlbum(album: string) {
-  const getCards = await firebase.firestore().collection('albums').doc(album).get();
+  const getCards = await firebase.firestore().collection('albums').where('id', '==', Number(album)).get();
 
-  const cardInfo: albumType = getCards.data() as albumType;
+  const cardInfo: albumType = getCards.docs[0].data() as albumType;
 
   return cardInfo.cardsId;
+}
+
+export async function getAlbumName(album: string) {
+  const getCards = await firebase.firestore().collection('albums').where('id', '==', Number(album)).get();
+
+  const cardInfo: albumType = getCards.docs[0].data() as albumType;
+
+  return cardInfo.name;
 }
 
 export async function getCards(queryId: number[]) {
@@ -269,7 +277,6 @@ export async function getAlbumsBySearch(queryId: string) {
 export async function getCardsBySearch(queryTags: string[], start: number | string, limit: number) {
   const cards: cardType[] = [];
   console.log(queryTags);
-  
 
   if (queryTags.length === 0) {
     return [] as cardType[];
@@ -291,7 +298,7 @@ export async function getCardsBySearch(queryTags: string[], start: number | stri
   getCards.forEach((doc) => {
     const cardInfo = doc.data() as cardType;
     console.log(doc.data());
-    
+
     cards.push(cardInfo);
   });
 

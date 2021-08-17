@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { getAlbum, getCards } from '../../firebase';
+import { getAlbum, getAlbumName, getCards } from '../../firebase';
 import { cardTypeShort } from '../../types';
 
 function AlbumPage() {
@@ -11,9 +11,9 @@ function AlbumPage() {
   const [isLoadedCards, setLoadedCards] = useState<boolean>(false);
 
   useEffect(() => {
-    setAlbum(window.location.pathname.substring(7));
     const dCards = cards;
     const getter = async () => {
+      setAlbum(await getAlbumName(window.location.pathname.substr(7)));
       if (cardArray.length === 0) {
         setCardArray((await getAlbum(window.location.pathname.substr(7))).reverse());
       }
@@ -35,7 +35,7 @@ function AlbumPage() {
     return () => {};
   }, [window.location.pathname.substring(7), cardsCount, cardArray]);
 
-  document.title = album || 'GoodSearch альбомы';
+  document.title = album || 'GS Альбом';
 
   const renderCards = cards?.map((card: cardTypeShort) => {
     return (
