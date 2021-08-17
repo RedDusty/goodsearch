@@ -14,7 +14,7 @@ const StartPage: React.FC<{
   let renderAccess: JSX.Element = <></>;
   let renderUpload: JSX.Element = (
     <NavLink to="/upload" className="btn-pr ml-4">
-      Upload
+      Загрузить
     </NavLink>
   );
   let renderProfile: JSX.Element = <></>;
@@ -23,7 +23,7 @@ const StartPage: React.FC<{
     if (user.banned) {
       renderUpload = (
         <div className="bg-pink-100 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium rounded-lg ml-4 cursor-default">
-          <p>Account is blocked</p>
+          <p>Аккаунт заблокирован</p>
         </div>
       );
     }
@@ -37,7 +37,7 @@ const StartPage: React.FC<{
       <>
         {renderUpload}
         <button className="btn-pr ml-4" onClick={logOut}>
-          Log out
+          Выйти
         </button>
       </>
     );
@@ -45,7 +45,7 @@ const StartPage: React.FC<{
   if (!user.uid) {
     renderAccess = (
       <button className="btn-pr ml-4" onClick={signInWithGoogle}>
-        Login with Google
+        Вход через Google
       </button>
     );
   }
@@ -58,7 +58,7 @@ const StartPage: React.FC<{
           tips.start ? 'hidden' : 'block'
         }`}
       >
-        <p>Try to find something or upload it yourself.</p>
+        <p>Попробуйте найти что-то или загрузите сами.</p>
         <button
           className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
           onClick={() => {
@@ -73,15 +73,15 @@ const StartPage: React.FC<{
             });
           }}
         >
-          Close
+          Закрыть
         </button>
       </div>
       <div className="flex mt-4">
         <NavLink to="/albums" className="btn-pr">
-          Show all albums
+          Показать все альбомы
         </NavLink>
         <NavLink to="/cards" className="btn-pr ml-4">
-          Show all cards
+          Показать все карты
         </NavLink>
       </div>
       <div className="flex mt-4">
@@ -105,12 +105,12 @@ const StartPage: React.FC<{
             localStorage.setItem('tagsImageTip', 'false');
           }}
         >
-          Reset tips
+          Сбросить подсказки
         </button>
       </div>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-100 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
-          Don't forget to enable cookies if you can't login!
+          Включите Cookies, если не можете войти на сайт!
         </p>
       ) : (
         <></>

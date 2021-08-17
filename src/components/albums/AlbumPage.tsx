@@ -35,7 +35,7 @@ function AlbumPage() {
     return () => {};
   }, [window.location.pathname.substring(7), cardsCount, cardArray]);
 
-  document.title = album || 'GoodSearch album';
+  document.title = album || 'GoodSearch альбомы';
 
   const renderCards = cards?.map((card: cardTypeShort) => {
     return (
@@ -55,7 +55,7 @@ function AlbumPage() {
       <div className="flex flex-wrap">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
-          <p className="font-medium">All cards are loaded</p>
+          <p className="font-medium">Нет новых карт.</p>
         </div>
       ) : (
         <button
@@ -65,7 +65,7 @@ function AlbumPage() {
           }}
           className="btn-pr my-4"
         >
-          <p>More</p>
+          <p>Ещё</p>
         </button>
       )}
     </div>

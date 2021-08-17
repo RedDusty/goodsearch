@@ -56,7 +56,7 @@ const StartPageSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateA
         <input
           type="text"
           className="w-full h-8 bg-gray-100 outline-none hover:bg-white focus:bg-white rounded-xl p-2 m-2"
-          placeholder="[10 tags max] Search..."
+          placeholder="[10 тегов макс.] Поиск..."
           ref={inputRef}
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
             if (querySearch.length < 10) {
@@ -92,7 +92,7 @@ const StartPageSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateA
                 setTagList([] as albumType[]);
               }}
             >
-              Close
+              Закрыть
             </button>
           </div>
         </div>

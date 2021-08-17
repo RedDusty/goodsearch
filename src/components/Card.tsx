@@ -51,13 +51,13 @@ const Card: React.FC<{
 
   let fileSize: string = '';
   if (card.fileSize <= 1024) {
-    fileSize = `${card.fileSize.toFixed(2)} b`;
+    fileSize = `${card.fileSize.toFixed(2)} байт`;
   }
   if (card.fileSize <= 1048576 && card.fileSize > 1024) {
-    fileSize = `${(card.fileSize / 1000).toFixed(2)} kb`;
+    fileSize = `${(card.fileSize / 1000).toFixed(2)} кб`;
   }
   if (card.fileSize <= 16777216 && card.fileSize > 1048576) {
-    fileSize = `${(card.fileSize / 1000 / 1000).toFixed(2)} mb`;
+    fileSize = `${(card.fileSize / 1000 / 1000).toFixed(2)} мб`;
   }
   return (
     <div className="w-full h-full">
@@ -66,7 +66,7 @@ const Card: React.FC<{
           className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
           href={card.fileURL}
         >
-          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Download</p>
+          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Скачать</p>
         </a>
       </div>
       <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center">
@@ -76,7 +76,7 @@ const Card: React.FC<{
           }`}
         >
           <div className="flex justify-center items-start flex-col">
-            <p>You can click on the picture and zoom in on it. To exit click on it again.</p>
+            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё, чтобы выйти.</p>
           </div>
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
@@ -141,7 +141,7 @@ const Card: React.FC<{
           }`}
         >
           <div className="flex justify-center items-center flex-col">
-            <p>Click on any of these tags to view cards with that tag.</p>
+            <p>Нажмите на любой из тегов, что перейти к картам с таким же тегом..</p>
           </div>
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
@@ -157,7 +157,7 @@ const Card: React.FC<{
               });
             }}
           >
-            Close
+            Закрыть
           </button>
         </div>
         <div className="flex flex-col w-full md:w-4/5">

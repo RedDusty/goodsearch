@@ -32,7 +32,7 @@ const Preview: React.FC<{
       <div className="flex bg-blue-50 p-1 items-center rounded-lg mx-2 my-1" key={i}>
         <p className="text-blue-900 text-lg">{tag}</p>
         <button
-          className="outline-none ont-medium text-blue-900  ml-2 select-none bg-blue-50 hover:bg-blue-300 hover:text-blue-600 focus:text-blue-300 focus:bg-blue-700 rounded-full w-5 h-5 flex items-center justify-center"
+          className="outline-none font-medium text-blue-900  ml-2 select-none bg-blue-50 hover:bg-blue-300 hover:text-blue-600 focus:text-blue-300 focus:bg-blue-700 rounded-full w-5 h-5 flex items-center justify-center"
           onClick={() => {
             const dTags: string[] = tags;
             dTags.splice(i, 1);
@@ -72,40 +72,40 @@ const Preview: React.FC<{
               setFile(undefined);
               setPreviewFile(undefined);
             } else {
-              errorCreate(setError, 'Error: uploading card');
+              errorCreate(setError, 'Ошибка: карта загружается...');
             }
           }}
         >
-          Clear
+          Очистить
         </button>
         <button
           className="btn-pr ml-4  shadow-none sm:shadow-xl"
           onClick={() => {
-            if (tags.length <= 30 && tags.length >= 3) {
+            if (tags.length <= 30 && tags.length >= 1) {
               if (!isLoading) {
                 setLoading(true);
                 uploadImage(previewFile, tags, user, isAnon);
               } else {
-                errorCreate(setError, 'Error: uploading card');
+                errorCreate(setError, 'Ошибка: карта загружается...');
               }
             } else {
               if (tags.length > 30) {
-                errorCreate(setError, 'Error: 30 tags max');
-              } else if (tags.length < 3) {
-                errorCreate(setError, 'Error: 3 min tags');
+                errorCreate(setError, 'Ошибка: 30 тегов максимально!');
+              } else if (tags.length < 1) {
+                errorCreate(setError, 'Ошибка: 1 тег минимум!');
               } else {
-                errorCreate(setError, 'Error: undefined error');
+                errorCreate(setError, 'Ошибка: неизвестная ошибка.');
               }
             }
           }}
         >
-          Create
+          Создать
         </button>
         <a
           className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
           href={previewFile.source}
         >
-          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Download</p>
+          <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Скачать</p>
         </a>
       </div>
       {error.length !== 0 ? (
@@ -128,13 +128,11 @@ const Preview: React.FC<{
           }`}
         >
           <div className="flex justify-center items-start flex-col">
-            <p>Look, the size of your picture has become smaller, but the quality is the same, cool?</p>
+            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё, чтобы выйти.</p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>You can click on the picture and zoom in on it. To exit click on it again.</p>
+            <p>Максимум 50 символов. </p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>Maximum 50 characters. </p>
-            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>This is a required field.</p>
+            <p>Это необязательное поле.</p>
           </div>
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
@@ -197,7 +195,7 @@ const Preview: React.FC<{
                 setAnon(!isAnon);
               }}
             >
-              <p className="font-medium">Anonymously?</p>
+              <p className="font-medium">Анонимно?</p>
               <div className="ml-2 fill-current">
                 {isAnon ? (
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -214,7 +212,7 @@ const Preview: React.FC<{
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
           {isAnon ? <></> : <img src={user.photoURL} alt="" className="w-10 h-10 profileImage cursor-default" />}
           {isAnon ? (
-            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
+            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Анон</p>
           ) : (
             <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
               {(user.displayName?.length || 0) >= 15 ? user.displayName?.substring(0, 15) + '...' : user.displayName}
@@ -232,14 +230,14 @@ const Preview: React.FC<{
         >
           <div className="flex justify-center items-center flex-col">
             {isAnon ? (
-              <p>Oh, and what are you ashamed of? ( ͡° ͜ʖ ͡°)</p>
+              <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p>
             ) : (
-              <p>You can upload card anonymously and no one will recognize you!</p>
+              <p>Загрузи анонимно и никто не узнает тебя!</p>
             )}
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>Minimum 3 tags and maximum 30. 25 characters per tag.</p>
+            <p>Минимум 1 тег и максимум 30. 25 символов на каждый.</p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>This is a required field.</p>
+            <p>Это обязательное поле.</p>
           </div>
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
@@ -255,7 +253,7 @@ const Preview: React.FC<{
               });
             }}
           >
-            Close
+            Закрыть
           </button>
         </div>
         <div className="flex flex-col w-full md:w-4/5">
@@ -264,7 +262,7 @@ const Preview: React.FC<{
               type="text"
               className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
               maxLength={25}
-              placeholder="Write tags here..."
+              placeholder="Здесь писать теги..."
               onChange={(e: React.FormEvent<HTMLInputElement>) => {
                 if (e.currentTarget.value.length > 26) {
                   e.preventDefault();
@@ -301,7 +299,7 @@ const Preview: React.FC<{
                         errorCreate(setError, `Error: can't start with a dot (.)`);
                       }
                     });
-                    dTags.splice(25, dTags.length - 25);
+                    dTags.splice(30, dTags.length - 30);
                     setTags([...dTags]);
                     e.currentTarget.value = '';
                   }

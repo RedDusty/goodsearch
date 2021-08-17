@@ -21,7 +21,7 @@ const Upload: React.FC<{
     return <Redirect to={redirect} />;
   }
 
-  document.title = 'GoodSearch upload';
+  document.title = 'GoodSearch загрузка';
 
   return (
     <div className="w-full h-full flex flex-col items-center">

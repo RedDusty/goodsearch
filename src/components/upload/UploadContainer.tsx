@@ -18,7 +18,7 @@ const UploadContainer: React.FC<{
     accept: 'image/*',
     onDrop: async (acceptedFiles: File[]) => {
       if (acceptedFiles[0].size > 16777216) {
-        return <p>Too large!</p>;
+        return <p>Большой размер!</p>;
       } else {
         getPreview(acceptedFiles[0], setPreviewFile);
         setFile(acceptedFiles[0]);

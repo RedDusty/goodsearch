@@ -26,11 +26,7 @@ const SearchedCards: React.FC<{ searchCards: string }> = ({ searchCards }) => {
 
         if (fbCards.length !== 0) {
           let concated = dCards?.concat(fbCards);
-          concated = concated.filter((card, index, self) =>
-          index === self.findIndex((t) => (
-            t.id === card.id
-          ))
-        )
+          concated = concated.filter((card, index, self) => index === self.findIndex((t) => t.id === card.id));
           setCards(concated);
           setLastId(fbCards.slice(-1)[0].id);
         } else {
@@ -45,7 +41,7 @@ const SearchedCards: React.FC<{ searchCards: string }> = ({ searchCards }) => {
     };
   }, [update, searchCards]);
 
-  document.title = 'GoodSearch cards';
+  document.title = 'GoodSearch карты';
 
   const renderCards = cards?.map((card: cardType) => {
     return (
@@ -77,7 +73,7 @@ const SearchedCards: React.FC<{ searchCards: string }> = ({ searchCards }) => {
       <div className="flex flex-wrap ">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
-          <p className="font-medium">All cards are loaded</p>
+          <p className="font-medium">Нет новых карт.</p>
         </div>
       ) : (
         <button
@@ -86,7 +82,7 @@ const SearchedCards: React.FC<{ searchCards: string }> = ({ searchCards }) => {
           }}
           className="btn-pr my-4"
         >
-          <p>More</p>
+          <p>Ещё</p>
         </button>
       )}
     </div>

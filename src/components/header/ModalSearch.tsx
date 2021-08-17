@@ -58,7 +58,7 @@ const ModalSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateActio
         <input
           type="text"
           className="w-full h-8 bg-gray-100 outline-none hover:bg-white focus:bg-white rounded-xl p-2 m-2"
-          placeholder="[10 tags max] Search..."
+          placeholder="[10 тегов макс.] Поиск..."
           ref={inputRef}
           value={searchCards}
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
@@ -95,7 +95,7 @@ const ModalSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateActio
                 setTagList([] as albumType[]);
               }}
             >
-              Close
+              Закрыть
             </button>
           </div>
         </div>

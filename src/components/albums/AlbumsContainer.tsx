@@ -27,7 +27,7 @@ function AlbumsContainer() {
     return () => {};
   }, [update]);
 
-  document.title = 'GoodSearch albums';
+  document.title = 'GoodSearch альбомы';
 
   const renderAlbums = albums?.map((album: albumType) => {
     return (
@@ -55,7 +55,7 @@ function AlbumsContainer() {
       <div className="flex flex-wrap ">{renderAlbums}</div>
       {isLoadedAlbums ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
-          <p className="font-medium">All albums are loaded</p>
+          <p className="font-medium">Нет новых альбомов.</p>
         </div>
       ) : (
         <button
@@ -64,7 +64,7 @@ function AlbumsContainer() {
           }}
           className="btn-pr my-4"
         >
-          <p>More</p>
+          <p>Ещё</p>
         </button>
       )}
     </div>
