@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 import { getCard } from '../firebase';
-import { cardType, tipsType } from '../types';
+import { cardType, tipsType, userType } from '../types';
+import { UserContext } from '../UserProvider';
 
 const Card: React.FC<{
   setTips: React.Dispatch<React.SetStateAction<tipsType>>;
@@ -21,6 +21,12 @@ const Card: React.FC<{
     userPhoto: '',
     userUID: ''
   } as cardType);
+
+  const user: userType = useContext(UserContext);
+
+  const [tags, setTags] = useState<string[]>([]);
+  const [newTags, setNewTags] = useState<string[]>([]);
+  const [isEditTags, setEditTags] = useState<boolean>(false);
 
   useEffect(() => {
     const getter = async () => {
@@ -68,14 +74,14 @@ const Card: React.FC<{
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Скачать</p>
         </a>
       </div>
-      <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center">
+      <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center mt-4">
         <div
           className={`bg-green-200 text-green-800 font-medium text-base sm:text-lg flex-col sm:flex-row py-2 px-4 flex justify-center items-center sm:rounded-lg ${
             tips.zoomImage ? 'hidden' : 'block'
           }`}
         >
           <div className="flex justify-center items-start flex-col">
-            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё, чтобы выйти.</p>
+            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё раз, чтобы выйти.</p>
           </div>
           <button
             className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
@@ -86,8 +92,7 @@ const Card: React.FC<{
                 uName: tips.uName,
                 uTags: tips.uTags,
                 upload: tips.upload,
-                zoomImage: true,
-                tagsImage: tips.tagsImage
+                zoomImage: true
               });
             }}
           >
@@ -95,11 +100,11 @@ const Card: React.FC<{
           </button>
         </div>
       </div>
-      <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
+      <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 sm:mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
         <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>
         <p>{'Size: ' + fileSize}</p>
       </div>
-      <div className="w-full md:w-4/5 my-4 md:mx-auto py-2 md:px-2 flex flex-col items-center">
+      <div className="w-full md:w-4/5 mb-4 sm:my-4 md:mx-auto sm:py-2 md:px-2 flex flex-col items-center">
         <div className="flex justify-center items-center">
           <div
             className={`${
@@ -120,6 +125,23 @@ const Card: React.FC<{
           </div>
         </div>
         <div className="w-full my-4 flex items-center justify-evenly">
+          {/* {user.uid === card.userUID ? (
+            <>
+              <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
+              <div className="flex items-center">
+                <button
+                  className="btn-pr cursor-pointer flex items-center"
+                  onClick={() => {
+                    setEditTags(!isEditTags);
+                  }}
+                >
+                  <p className="font-medium">{isEditTags ? 'Принять' : 'Редактировать'}</p>
+                </button>
+              </div>
+            </>
+          ) : (
+            <></>
+          )} */}
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
           {card.userPhoto !== 'Anon' ? (
             <>
@@ -132,32 +154,6 @@ const Card: React.FC<{
             <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
           )}
           <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-        </div>
-
-        <div
-          className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg py-2 sm:mb-2 px-4 flex flex-col sm:flex-row justify-center items-center sm:rounded-lg ${
-            tips.tagsImage ? 'hidden' : 'block'
-          }`}
-        >
-          <div className="flex justify-center items-center flex-col">
-            <p>Нажмите на любой из тегов, что перейти к картам с таким же тегом..</p>
-          </div>
-          <button
-            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
-            onClick={() => {
-              localStorage.setItem('tagsImageTip', 'true');
-              setTips({
-                start: tips.start,
-                uName: tips.uName,
-                uTags: tips.uTags,
-                upload: tips.upload,
-                zoomImage: tips.zoomImage,
-                tagsImage: true
-              });
-            }}
-          >
-            Закрыть
-          </button>
         </div>
         <div className="flex flex-col w-full md:w-4/5">
           <div className="flex flex-wrap">{renderTags}</div>

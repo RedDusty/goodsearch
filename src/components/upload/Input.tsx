@@ -32,8 +32,7 @@ export const Input: React.FC<{
               uName: tips.uName,
               uTags: tips.uTags,
               upload: true,
-              zoomImage: tips.zoomImage,
-              tagsImage: tips.tagsImage
+              zoomImage: tips.zoomImage
             });
           }}
         >

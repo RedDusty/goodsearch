@@ -128,7 +128,7 @@ const Preview: React.FC<{
           }`}
         >
           <div className="flex justify-center items-start flex-col">
-            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё, чтобы выйти.</p>
+            <p>Нажмите на картинку, чтобы перейти в полный экран. Нажмите ещё раз, чтобы выйти.</p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
             <p>Максимум 50 символов. </p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
@@ -143,8 +143,7 @@ const Preview: React.FC<{
                 uName: true,
                 uTags: tips.uTags,
                 upload: tips.upload,
-                zoomImage: tips.zoomImage,
-                tagsImage: tips.tagsImage
+                zoomImage: tips.zoomImage
               });
             }}
           >
@@ -229,11 +228,7 @@ const Preview: React.FC<{
           }`}
         >
           <div className="flex justify-center items-center flex-col">
-            {isAnon ? (
-              <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p>
-            ) : (
-              <p>Загрузи анонимно и никто не узнает тебя!</p>
-            )}
+            {isAnon ? <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p> : <p>Загрузи анонимно и никто не узнает тебя!</p>}
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
             <p>Минимум 1 тег и максимум 30. 25 символов на каждый.</p>
             <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
@@ -248,8 +243,7 @@ const Preview: React.FC<{
                 uName: tips.uName,
                 uTags: true,
                 upload: tips.upload,
-                zoomImage: tips.zoomImage,
-                tagsImage: tips.tagsImage
+                zoomImage: tips.zoomImage
               });
             }}
           >

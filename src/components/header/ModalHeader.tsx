@@ -90,34 +90,30 @@ const ModalHeader: React.FC<{
         <NavLink to="/albums" className="btn-pr ml-2 bg-blue-300">
           Показать все альбомы
         </NavLink>
-        <NavLink to="/cards" className="btn-pr ml-4 bg-blue-300">
+        <NavLink to="/cards" className="btn-pr ml-2 sm:ml-4 mt-2 sm:mt-0 bg-blue-300">
           Показать все карты
         </NavLink>
       </div>
-      <div className="flex mt-4">
-        {renderAccess}
-        <button
-          className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
-          onClick={() => {
-            setTips({
-              start: false,
-              uName: false,
-              uTags: false,
-              upload: false,
-              zoomImage: false,
-              tagsImage: false
-            });
-            localStorage.setItem('startTip', 'false');
-            localStorage.setItem('uploadTip', 'false');
-            localStorage.setItem('uTagsTip', 'false');
-            localStorage.setItem('uNameTip', 'false');
-            localStorage.setItem('zoomImageTip', 'false');
-            localStorage.setItem('tagsImageTip', 'false');
-          }}
-        >
-          Сбросить подсказки
-        </button>
-      </div>
+      <div className="flex mt-4">{renderAccess}</div>
+      <button
+        className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 mx-4 mt-2 rounded-md max-w-xs"
+        onClick={() => {
+          setTips({
+            start: false,
+            uName: false,
+            uTags: false,
+            upload: false,
+            zoomImage: false
+          });
+          localStorage.setItem('startTip', 'false');
+          localStorage.setItem('uploadTip', 'false');
+          localStorage.setItem('uTagsTip', 'false');
+          localStorage.setItem('uNameTip', 'false');
+          localStorage.setItem('zoomImageTip', 'false');
+        }}
+      >
+        Сбросить подсказки
+      </button>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-200 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
           Включите Cookies, если не можете войти на сайт!

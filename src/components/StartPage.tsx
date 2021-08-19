@@ -68,8 +68,7 @@ const StartPage: React.FC<{
               uName: tips.uName,
               uTags: tips.uTags,
               upload: tips.upload,
-              zoomImage: tips.zoomImage,
-              tagsImage: tips.tagsImage
+              zoomImage: tips.zoomImage
             });
           }}
         >
@@ -94,15 +93,13 @@ const StartPage: React.FC<{
               uName: false,
               uTags: false,
               upload: false,
-              zoomImage: false,
-              tagsImage: false
+              zoomImage: false
             });
             localStorage.setItem('startTip', 'false');
             localStorage.setItem('uploadTip', 'false');
             localStorage.setItem('uTagsTip', 'false');
             localStorage.setItem('uNameTip', 'false');
             localStorage.setItem('zoomImageTip', 'false');
-            localStorage.setItem('tagsImageTip', 'false');
           }}
         >
           Сбросить подсказки

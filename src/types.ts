@@ -60,5 +60,4 @@ export type tipsType = {
   uTags: boolean;
   uName: boolean;
   zoomImage: boolean;
-  tagsImage: boolean;
 };
