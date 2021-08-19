@@ -351,11 +351,15 @@ export async function editTags(tags: string[], newTags: string[], card: cardType
 
       let count = album.count - 1;
 
-      await firebase
-        .firestore()
-        .collection('albums')
-        .doc(tag)
-        .update({ cardsId: cardsId, count: count } as albumType);
+      if (count === 0) {
+        await firebase.firestore().collection('albums').doc(tag).delete();
+      } else {
+        await firebase
+          .firestore()
+          .collection('albums')
+          .doc(tag)
+          .update({ cardsId: cardsId, count: count } as albumType);
+      }
     });
   }
 
