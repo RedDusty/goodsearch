@@ -281,16 +281,19 @@ const Preview: React.FC<{
                                 dTags.push(tag);
                               }
                             } else {
-                              errorCreate(setError, `Error: can't start and end with double underscores (__)`);
+                              errorCreate(
+                                setError,
+                                `Ошибка: не может начинаться и заканчиваться с нижних подчёркиваний (__)`
+                              );
                             }
                           } else {
-                            errorCreate(setError, `Error: can't contain a slash (/ \\)`);
+                            errorCreate(setError, `Ошибка: не может содержать слэши (/ \\)`);
                           }
                         } else {
-                          errorCreate(setError, `Error: can't contain double dots (..)`);
+                          errorCreate(setError, `Ошибка: не может содержать двоеточие (..)`);
                         }
                       } else {
-                        errorCreate(setError, `Error: can't start with a dot (.)`);
+                        errorCreate(setError, `Ошибка: не может содержать точку в начале (.)`);
                       }
                     });
                     dTags.splice(30, dTags.length - 30);

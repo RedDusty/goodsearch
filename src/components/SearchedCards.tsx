@@ -10,19 +10,15 @@ const SearchedCards: React.FC<{ searchCards: string }> = ({ searchCards }) => {
   const [update, setUpdate] = useState<number>(0);
   const [lastQuery, setLastQuery] = useState<string>();
 
-  console.log(searchCards);
-
   useEffect(() => {
     const timeTyping = setTimeout(() => {
       if (lastQuery !== searchCards) {
         setLastId('');
       }
-      console.log(searchCards);
       const dCards = cards;
       const getter = async () => {
         const fbCards = await getCardsBySearch(searchCards.split(' '), lastId, 10);
         setLastQuery(searchCards);
-        console.log(fbCards);
 
         if (fbCards.length !== 0) {
           let concated = dCards?.concat(fbCards);

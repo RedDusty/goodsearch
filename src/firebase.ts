@@ -220,7 +220,7 @@ export async function getCard(id: string) {
   const cardInfo = getCard.data() as cardType;
 
   card = cardInfo;
-  
+
   return card;
 }
 
@@ -276,7 +276,6 @@ export async function getAlbumsBySearch(queryId: string) {
 
 export async function getCardsBySearch(queryTags: string[], start: number | string, limit: number) {
   const cards: cardType[] = [];
-  console.log(queryTags);
 
   if (queryTags.length === 0) {
     return [] as cardType[];
@@ -297,7 +296,6 @@ export async function getCardsBySearch(queryTags: string[], start: number | stri
 
   getCards.forEach((doc) => {
     const cardInfo = doc.data() as cardType;
-    console.log(doc.data());
 
     cards.push(cardInfo);
   });
@@ -307,4 +305,104 @@ export async function getCardsBySearch(queryTags: string[], start: number | stri
   });
 
   return sortedCards.reverse();
+}
+
+function tagsCalc(tags: string[], newTags: string[]) {
+  let tagsToDelete: string[] = [];
+  let tagsToAdd: string[] = [];
+
+  for (let index = 0; index < 30; index++) {
+    const tag = tags[index];
+    const newTag = newTags[index];
+
+    if (tag) {
+      if (newTags.indexOf(tag) === -1) {
+        tagsToDelete.push(tag);
+      }
+    }
+
+    if (newTag) {
+      if (tags.indexOf(newTag) === -1) {
+        tagsToAdd.push(newTag);
+      }
+    }
+
+    if ((!tag && !newTag) || index === 29) {
+      return {
+        tagsToAdd,
+        tagsToDelete
+      };
+    }
+  }
+}
+
+export async function editTags(tags: string[], newTags: string[], card: cardType) {
+  const { tagsToDelete, tagsToAdd } = tagsCalc(tags, newTags)!;
+
+  if (tagsToDelete.length !== 0) {
+    tagsToDelete.forEach(async (tag) => {
+      const album: albumType = (await (
+        await firebase.firestore().collection('albums').doc(tag).get()
+      ).data()) as albumType;
+
+      let cardsId = album.cardsId;
+      const indexId = cardsId.indexOf(card.id);
+      cardsId.splice(indexId, 1);
+
+      let count = album.count - 1;
+
+      await firebase
+        .firestore()
+        .collection('albums')
+        .doc(tag)
+        .update({ cardsId: cardsId, count: count } as albumType);
+    });
+  }
+
+  if (tagsToAdd.length !== 0) {
+    tagsToAdd.forEach(async (tag) => {
+      const getAlbum = await firebase.firestore().collection('albums').doc(tag).get();
+
+      let album: albumType;
+
+      if (getAlbum.exists) {
+        album = (await getAlbum.data()) as albumType;
+
+        let cardsId = album.cardsId;
+        cardsId.push(card.id);
+
+        cardsId.sort((a, b) => {
+          return a - b;
+        });
+
+        album.count = album.count + 1;
+      } else {
+        album = {
+          cardsId: [card.id],
+          count: 1,
+          id: new Date().getTime(),
+          name: tag,
+          image: card.fileURL
+        };
+      }
+
+      if (getAlbum.exists) {
+        await firebase
+          .firestore()
+          .collection('albums')
+          .doc(tag)
+          .update({ cardsId: album.cardsId, count: album.count } as albumType);
+      } else {
+        await firebase.firestore().collection('albums').doc(tag).set(album);
+      }
+    });
+  }
+
+  if (tagsToAdd.length !== 0 || tagsToDelete.length !== 0) {
+    await firebase
+      .firestore()
+      .collection('cards')
+      .doc(String(card.id))
+      .update({ infoTags: newTags } as cardType);
+  }
 }
