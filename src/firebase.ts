@@ -147,13 +147,13 @@ export async function getLoginUser(user: userType) {
   }
 }
 
-export async function getAlbums(limit: number, start: number | string) {
+export async function getAlbums(limit: number, start: number | string, order: 'asc' | 'desc') {
   const albums: albumType[] = [];
 
   const getAlbums = await firebase
     .firestore()
     .collection('albums')
-    .orderBy('id', 'desc')
+    .orderBy('id', order)
     .startAfter(start)
     .limit(10)
     .get();
@@ -175,9 +175,9 @@ export async function getAlbums(limit: number, start: number | string) {
 export async function getAlbum(album: string) {
   const getCards = await firebase.firestore().collection('albums').where('id', '==', Number(album)).get();
 
-  const cardInfo: albumType = getCards.docs[0].data() as albumType;
+  const albumInfo: albumType = getCards.docs[0].data() as albumType;
 
-  return cardInfo.cardsId;
+  return albumInfo.cardsId.reverse();
 }
 
 export async function getAlbumName(album: string) {
@@ -237,16 +237,15 @@ export async function getUser(userCard: string) {
   return user;
 }
 
-export async function getAllCards(limit: number, start: number | string) {
+export async function getAllCards(limit: number, start: number | string, order: 'asc' | 'desc') {
   const cards: cardType[] = [];
 
-  const getDoc = await firebase.firestore().collection('cards').orderBy('id', 'desc').startAfter(start).limit(10).get();
+  const getDoc = await firebase.firestore().collection('cards').orderBy('id', order).startAfter(start).limit(10).get();
 
   getDoc.forEach((card) => {
     const cardData: cardType = card.data() as cardType;
     cards.push(cardData);
   });
-
   return cards;
 }
 

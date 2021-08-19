@@ -46,13 +46,13 @@ const Preview: React.FC<{
   });
   let fileSize: string = '';
   if (previewFile.size <= 1024) {
-    fileSize = `${previewFile.size.toFixed(2)} b`;
+    fileSize = `${previewFile.size.toFixed(2)} байт`;
   }
   if (previewFile.size <= 1048576 && previewFile.size > 1024) {
-    fileSize = `${(previewFile.size / 1000).toFixed(2)} kb`;
+    fileSize = `${(previewFile.size / 1000).toFixed(2)} кб`;
   }
   if (previewFile.size <= 16777216 && previewFile.size > 1048576) {
-    fileSize = `${(previewFile.size / 1000 / 1000).toFixed(2)} mb`;
+    fileSize = `${(previewFile.size / 1000 / 1000).toFixed(2)} мб`;
   }
   return (
     <div className="w-full h-full">
@@ -118,8 +118,8 @@ const Preview: React.FC<{
         <></>
       )}
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
-        <p className="break-all">{`Name: ${fileName}_id######.webp`}</p>
-        <p>{'Size: ' + fileSize}</p>
+        <p className="break-all">{`Имя: ${fileName}_id######.webp`}</p>
+        <p>{'Размер: ' + fileSize}</p>
       </div>
       <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center">
         <div

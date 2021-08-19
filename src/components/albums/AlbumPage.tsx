@@ -10,19 +10,36 @@ function AlbumPage() {
   const [cardsCount, setCardsCount] = useState<number>(0);
   const [isLoadedCards, setLoadedCards] = useState<boolean>(false);
 
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+
   useEffect(() => {
     const dCards = cards;
     const getter = async () => {
       setAlbum(await getAlbumName(window.location.pathname.substr(7)));
       if (cardArray.length === 0) {
-        setCardArray((await getAlbum(window.location.pathname.substr(7))).reverse());
+        setCardArray(await getAlbum(window.location.pathname.substr(7)));
       }
 
-      const fbCards = await getCards(cardArray.slice(cardsCount, cardsCount + 10));
+      let cards: number[];
+
+      if (order === 'desc') {
+        cards = cardArray.slice();
+      }
+      if (order === 'asc') {
+        cards = cardArray.slice().reverse();
+      }
+      
+      const fbCards = await getCards(cards!.slice(cardsCount, cardsCount + 10));
 
       if (cardArray.slice(cardsCount, cardsCount + 10).length !== 0) {
-        const concated = dCards?.concat(fbCards);
-        setCards(concated);
+        if (order === 'desc') {
+          const concated = dCards?.concat(fbCards);
+          setCards(concated);
+        }
+        if (order === 'asc') {
+          const concated = dCards?.concat(fbCards.slice().reverse());
+          setCards(concated);
+        }
       } else {
         if (cardsCount !== 0 && cardArray.length !== 0) {
           setLoadedCards(true);
@@ -33,7 +50,7 @@ function AlbumPage() {
     getter();
 
     return () => {};
-  }, [window.location.pathname.substring(7), cardsCount, cardArray]);
+  }, [window.location.pathname.substring(7), cardsCount, cardArray, order]);
 
   document.title = album || 'GS Альбом';
 
@@ -52,6 +69,22 @@ function AlbumPage() {
   });
   return (
     <div className="h-full w-full">
+      <div className="w-full flex justify-center items-center mt-4">
+        <p className="mr-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Фильтры:</p>
+        <button
+          className="btn-pr cursor-pointer flex items-center"
+          onClick={() => {
+            setCards([]);
+            setLoadedCards(false);
+            setCardArray([]);
+            setCardsCount(0);
+            if (order === 'asc') setOrder('desc');
+            if (order === 'desc') setOrder('asc');
+          }}
+        >
+          {order === 'desc' ? 'Сначала новые' : 'Сначала старые'}
+        </button>
+      </div>
       <div className="flex flex-wrap w-full justify-center">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">

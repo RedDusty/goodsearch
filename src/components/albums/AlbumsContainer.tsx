@@ -9,10 +9,12 @@ function AlbumsContainer() {
   const [albums, setAlbums] = useState<albumType[]>([]);
   const [update, setUpdate] = useState<number>(0);
 
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+
   useEffect(() => {
     const dAlbums = albums;
     const getter = async () => {
-      const fbAlbums = await getAlbums(10, lastId);
+      const fbAlbums = await getAlbums(10, lastId, order);
       if (fbAlbums.length !== 0) {
         const concated = dAlbums?.concat(fbAlbums);
         setAlbums(concated);
@@ -25,7 +27,7 @@ function AlbumsContainer() {
     getter();
 
     return () => {};
-  }, [update]);
+  }, [update, order]);
 
   document.title = 'GoodSearch альбомы';
 
@@ -52,6 +54,26 @@ function AlbumsContainer() {
   });
   return (
     <div className="w-full h-full">
+      <div className="w-full flex justify-center items-center mt-4">
+        <p className="mr-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Фильтры:</p>
+        <button
+          className="btn-pr cursor-pointer flex items-center"
+          onClick={() => {
+            setAlbums([]);
+            setLoadedAlbums(false);
+            if (order === 'asc') {
+              setLastId('');
+              setOrder('desc');
+            }
+            if (order === 'desc') {
+              setLastId(0);
+              setOrder('asc');
+            }
+          }}
+        >
+          {order === 'desc' ? 'Сначала новые' : 'Сначала старые'}
+        </button>
+      </div>
       <div className="flex flex-wrap w-full justify-center">{renderAlbums}</div>
       {isLoadedAlbums ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">

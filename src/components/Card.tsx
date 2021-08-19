@@ -134,8 +134,8 @@ const Card: React.FC<{
         <></>
       )}
       <div className="w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 bg-blue-200 text-blue-900 p-2 sm:mt-4 mx-auto sm:rounded-lg text-sm sm:text-lg">
-        <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>
-        <p>{'Size: ' + fileSize}</p>
+        <p className="break-all">{`Имя: ${card.fileName}_${card.id}.webp`}</p>
+        <p>{'Размер: ' + fileSize}</p>
       </div>
       <div className="w-full my-4 flex flex-col sm:flex-row items-center justify-evenly">
         {user.uid === card.userUID ? (
