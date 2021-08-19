@@ -102,7 +102,7 @@ const Preview: React.FC<{
           Создать
         </button>
         <a
-          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg"
+          className="ml-4 flex justify-center items-center bg-blue-100  hover:bg-pink-100 focus:bg-pink-200 shadow-none sm:shadow-xl rounded-lg mt-2 ss:mt-0"
           href={previewFile.source}
         >
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Скачать</p>
@@ -156,7 +156,7 @@ const Preview: React.FC<{
           type="text"
           className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
           maxLength={50}
-          placeholder="[Optional] Set file name here - 50 symbols"
+          placeholder="Имя файла - 50 символов"
           onChange={(e: React.FormEvent<HTMLInputElement>) => {
             setFileName(e.currentTarget.value.substring(0, 50));
             if (e.currentTarget.value.length <= 50) {
@@ -164,6 +164,131 @@ const Preview: React.FC<{
             }
           }}
         />
+      </div>
+      <div className="w-full my-4 flex flex-col sm:flex-row items-center justify-evenly">
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+        <div className="flex items-center">
+          <button
+            className="btn-pr cursor-pointer flex items-center"
+            onClick={() => {
+              setAnon(!isAnon);
+            }}
+          >
+            <p className="font-medium">Анонимно?</p>
+            <div className="ml-2 fill-current">
+              {isAnon ? (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                  <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
+                </svg>
+              )}
+            </div>
+          </button>
+        </div>
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+        {isAnon ? <></> : <img src={user.photoURL} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />}
+        {isAnon ? (
+          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Анон</p>
+        ) : (
+          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+            {(user.displayName?.length || 0) >= 15 ? user.displayName?.substring(0, 15) + '...' : user.displayName}
+          </p>
+        )}
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+        <p className="text-blue-900">{tags.length}/30</p>
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+      </div>
+      <div
+        className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg py-2 sm:mb-2 px-4 flex flex-col sm:flex-row justify-center items-center sm:rounded-lg ${
+          tips.uTags ? 'hidden' : 'block'
+        }`}
+      >
+        <div className="flex justify-center items-center flex-col">
+          {isAnon ? <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p> : <p>Загрузи анонимно и никто не узнает тебя!</p>}
+          <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+          <p>Минимум 1 тег и максимум 30. 25 символов на каждый.</p>
+          <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
+          <p>Это обязательное поле.</p>
+        </div>
+        <button
+          className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
+          onClick={() => {
+            localStorage.setItem('uTagsTip', 'true');
+            setTips({
+              start: tips.start,
+              uName: tips.uName,
+              uTags: true,
+              upload: tips.upload,
+              zoomImage: tips.zoomImage
+            });
+          }}
+        >
+          Закрыть
+        </button>
+      </div>
+      <div className="flex flex-col w-full md:w-4/5">
+        <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
+          <input
+            type="text"
+            className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
+            maxLength={25}
+            placeholder="Здесь писать теги..."
+            onChange={(e: React.FormEvent<HTMLInputElement>) => {
+              if (e.currentTarget.value.length > 26) {
+                e.preventDefault();
+                e.currentTarget.classList.add('text-blue-900');
+              } else {
+                e.currentTarget.classList.remove('text-blue-900');
+                if (/\s/.test(e.currentTarget.value)) {
+                  const dTags: string[] = tags;
+                  e.currentTarget.value.match(/[^ -][^ ]*/g)?.map((value: string, i: number) => {
+                    const tag = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+                    if (!/^\./.test(tag)) {
+                      if (!/\.{2,}/.test(tag)) {
+                        if (!/\/|\\/.test(tag)) {
+                          if (!/^__.*__/.test(tag)) {
+                            let canPush: boolean = true;
+                            for (let checker = 0; checker < dTags.length; checker++) {
+                              if (tag === dTags[checker]) {
+                                canPush = false;
+                              }
+                            }
+                            if (canPush) {
+                              dTags.push(tag);
+                            }
+                          } else {
+                            errorCreate(
+                              setError,
+                              `Ошибка: не может начинаться и заканчиваться с нижних подчёркиваний (__)`
+                            );
+                          }
+                        } else {
+                          errorCreate(setError, `Ошибка: не может содержать слэши (/ \\)`);
+                        }
+                      } else {
+                        errorCreate(setError, `Ошибка: не может содержать двоеточие (..)`);
+                      }
+                    } else {
+                      errorCreate(setError, `Ошибка: не может содержать точку в начале (.)`);
+                    }
+                  });
+                  dTags.splice(30, dTags.length - 30);
+                  setTags([...dTags]);
+                  e.currentTarget.value = '';
+                }
+              }
+            }}
+            onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+              if (e.key === ' ' || e.code === 'Space') {
+                e.currentTarget.value = '';
+              }
+            }}
+          />
+        </div>
+        <div className="flex flex-wrap">{renderTags}</div>
       </div>
       <div className="w-full sm:w-auto my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 py-2 sm:px-2 flex flex-col items-center">
         <div className="flex justify-center items-center">
@@ -184,132 +309,6 @@ const Preview: React.FC<{
               }}
             />
           </div>
-        </div>
-        <div className="w-full my-4 flex items-center justify-evenly">
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <div className="flex items-center">
-            <button
-              className="btn-pr cursor-pointer flex items-center"
-              onClick={() => {
-                setAnon(!isAnon);
-              }}
-            >
-              <p className="font-medium">Анонимно?</p>
-              <div className="ml-2 fill-current">
-                {isAnon ? (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
-                  </svg>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                    <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
-                  </svg>
-                )}
-              </div>
-            </button>
-          </div>
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          {isAnon ? <></> : <img src={user.photoURL} alt="" className="w-10 h-10 profileImage cursor-default" />}
-          {isAnon ? (
-            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Анон</p>
-          ) : (
-            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-              {(user.displayName?.length || 0) >= 15 ? user.displayName?.substring(0, 15) + '...' : user.displayName}
-            </p>
-          )}
-
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          <p className="text-blue-900">{tags.length}/30</p>
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-        </div>
-        <div
-          className={`bg-green-200 text-green-800 w-full sm:w-auto font-medium text-base sm:text-lg py-2 sm:mb-2 px-4 flex flex-col sm:flex-row justify-center items-center sm:rounded-lg ${
-            tips.uTags ? 'hidden' : 'block'
-          }`}
-        >
-          <div className="flex justify-center items-center flex-col">
-            {isAnon ? <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p> : <p>Загрузи анонимно и никто не узнает тебя!</p>}
-            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>Минимум 1 тег и максимум 30. 25 символов на каждый.</p>
-            <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
-            <p>Это обязательное поле.</p>
-          </div>
-          <button
-            className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 ml-2 rounded-md"
-            onClick={() => {
-              localStorage.setItem('uTagsTip', 'true');
-              setTips({
-                start: tips.start,
-                uName: tips.uName,
-                uTags: true,
-                upload: tips.upload,
-                zoomImage: tips.zoomImage
-              });
-            }}
-          >
-            Закрыть
-          </button>
-        </div>
-        <div className="flex flex-col w-full md:w-4/5">
-          <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
-            <input
-              type="text"
-              className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
-              maxLength={25}
-              placeholder="Здесь писать теги..."
-              onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                if (e.currentTarget.value.length > 26) {
-                  e.preventDefault();
-                  e.currentTarget.classList.add('text-blue-900');
-                } else {
-                  e.currentTarget.classList.remove('text-blue-900');
-                  if (/\s/.test(e.currentTarget.value)) {
-                    const dTags: string[] = tags;
-                    e.currentTarget.value.match(/[^ -][^ ]*/g)?.map((value: string, i: number) => {
-                      const tag = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
-                      if (!/^\./.test(tag)) {
-                        if (!/\.{2,}/.test(tag)) {
-                          if (!/\/|\\/.test(tag)) {
-                            if (!/^__.*__/.test(tag)) {
-                              let canPush: boolean = true;
-                              for (let checker = 0; checker < dTags.length; checker++) {
-                                if (tag === dTags[checker]) {
-                                  canPush = false;
-                                }
-                              }
-                              if (canPush) {
-                                dTags.push(tag);
-                              }
-                            } else {
-                              errorCreate(
-                                setError,
-                                `Ошибка: не может начинаться и заканчиваться с нижних подчёркиваний (__)`
-                              );
-                            }
-                          } else {
-                            errorCreate(setError, `Ошибка: не может содержать слэши (/ \\)`);
-                          }
-                        } else {
-                          errorCreate(setError, `Ошибка: не может содержать двоеточие (..)`);
-                        }
-                      } else {
-                        errorCreate(setError, `Ошибка: не может содержать точку в начале (.)`);
-                      }
-                    });
-                    dTags.splice(30, dTags.length - 30);
-                    setTags([...dTags]);
-                    e.currentTarget.value = '';
-                  }
-                }
-              }}
-              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === ' ' || e.code === 'Space') {
-                  e.currentTarget.value = '';
-                }
-              }}
-            />
-          </div>
-          <div className="flex flex-wrap">{renderTags}</div>
         </div>
       </div>
       <div className="w-full h-4"></div>

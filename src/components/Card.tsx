@@ -137,6 +137,121 @@ const Card: React.FC<{
         <p className="break-all">{`Name: ${card.fileName}_${card.id}.webp`}</p>
         <p>{'Size: ' + fileSize}</p>
       </div>
+      <div className="w-full my-4 flex flex-col sm:flex-row items-center justify-evenly">
+        {user.uid === card.userUID ? (
+          <>
+            <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+            <div className="flex items-center">
+              <button
+                className="btn-pr cursor-pointer flex items-center"
+                onClick={() => {
+                  if (!isEditTags) {
+                    setEditTags(true);
+                    setNewTags(tags);
+                  }
+                  if (isEditTags) {
+                    if (newTags.length <= 30 && newTags.length >= 1) {
+                      setEditTags(false);
+                      const oldTags = tags.slice();
+                      setTags(newTags);
+                      editTags(oldTags, newTags, card);
+                    } else {
+                      if (newTags.length > 30) {
+                        errorCreate(setError, 'Ошибка: 30 тегов максимально!');
+                      } else if (newTags.length < 1) {
+                        errorCreate(setError, 'Ошибка: 1 тег минимум!');
+                      } else {
+                        errorCreate(setError, 'Ошибка: неизвестная ошибка.');
+                      }
+                    }
+                  }
+                }}
+              >
+                <p className="font-medium">{isEditTags ? 'Принять' : 'Редактировать'}</p>
+              </button>
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+        {card.userPhoto !== 'Anon' ? (
+          <>
+            <img src={card.userPhoto} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />
+            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+              {(card.userName.length || 0) >= 15 ? card.userName.substring(0, 15) + '...' : card.userName}
+            </p>
+          </>
+        ) : (
+          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
+        )}
+        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
+      </div>
+      <div className="flex flex-col w-full md:w-4/5">
+        {isEditTags ? (
+          <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
+            <input
+              type="text"
+              className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
+              maxLength={25}
+              placeholder="Здесь писать теги..."
+              onChange={(e: React.FormEvent<HTMLInputElement>) => {
+                if (e.currentTarget.value.length > 26) {
+                  e.preventDefault();
+                  e.currentTarget.classList.add('text-blue-900');
+                } else {
+                  e.currentTarget.classList.remove('text-blue-900');
+                  if (/\s/.test(e.currentTarget.value)) {
+                    const dTags: string[] = newTags.slice();
+                    e.currentTarget.value.match(/[^ -][^ ]*/g)?.map((value: string, i: number) => {
+                      const tag = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
+                      if (!/^\./.test(tag)) {
+                        if (!/\.{2,}/.test(tag)) {
+                          if (!/\/|\\/.test(tag)) {
+                            if (!/^__.*__/.test(tag)) {
+                              let canPush: boolean = true;
+                              for (let checker = 0; checker < dTags.length; checker++) {
+                                if (tag === dTags[checker]) {
+                                  canPush = false;
+                                }
+                              }
+                              if (canPush) {
+                                dTags.push(tag);
+                              }
+                            } else {
+                              errorCreate(
+                                setError,
+                                `Ошибка: не может начинаться и заканчиваться с нижних подчёркиваний (__)`
+                              );
+                            }
+                          } else {
+                            errorCreate(setError, `Ошибка: не может содержать слэши (/ \\)`);
+                          }
+                        } else {
+                          errorCreate(setError, `Ошибка: не может содержать двоеточие (..)`);
+                        }
+                      } else {
+                        errorCreate(setError, `Ошибка: не может содержать точку в начале (.)`);
+                      }
+                    });
+                    dTags.splice(30, dTags.length - 30);
+                    setNewTags([...dTags]);
+                    e.currentTarget.value = '';
+                  }
+                }
+              }}
+              onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
+                if (e.key === ' ' || e.code === 'Space') {
+                  e.currentTarget.value = '';
+                }
+              }}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
+        <div className="flex flex-wrap">{renderTags}</div>
+      </div>
       <div className="w-full md:w-4/5 mb-4 sm:my-4 md:mx-auto sm:py-2 md:px-2 flex flex-col items-center">
         <div className="flex justify-center items-center">
           <div
@@ -156,121 +271,6 @@ const Card: React.FC<{
               }}
             />
           </div>
-        </div>
-        <div className="w-full my-4 flex items-center justify-evenly">
-          {user.uid === card.userUID ? (
-            <>
-              <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-              <div className="flex items-center">
-                <button
-                  className="btn-pr cursor-pointer flex items-center"
-                  onClick={() => {
-                    if (!isEditTags) {
-                      setEditTags(true);
-                      setNewTags(tags);
-                    }
-                    if (isEditTags) {
-                      if (newTags.length <= 30 && newTags.length >= 1) {
-                        setEditTags(false);
-                        const oldTags = tags.slice();
-                        setTags(newTags);
-                        editTags(oldTags, newTags, card);
-                      } else {
-                        if (newTags.length > 30) {
-                          errorCreate(setError, 'Ошибка: 30 тегов максимально!');
-                        } else if (newTags.length < 1) {
-                          errorCreate(setError, 'Ошибка: 1 тег минимум!');
-                        } else {
-                          errorCreate(setError, 'Ошибка: неизвестная ошибка.');
-                        }
-                      }
-                    }
-                  }}
-                >
-                  <p className="font-medium">{isEditTags ? 'Принять' : 'Редактировать'}</p>
-                </button>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-          {card.userPhoto !== 'Anon' ? (
-            <>
-              <img src={card.userPhoto} alt="" className="w-10 h-10 profileImage cursor-default" />
-              <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-                {(card.userName.length || 0) >= 15 ? card.userName.substring(0, 15) + '...' : card.userName}
-              </p>
-            </>
-          ) : (
-            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
-          )}
-          <div className="w-full border-t border-solid border-blue-700 mx-2"></div>
-        </div>
-        <div className="flex flex-col w-full md:w-4/5">
-          {isEditTags ? (
-            <div className="bg-blue-100 w-full sm:w-2/3 lg:w-2/4 2xl:w-2/5 mx-auto p-2 sm:rounded-md sm:shadow-lg sm:mt-4">
-              <input
-                type="text"
-                className="bg-white w-full h-full outline-none p-2 rounded-md placeholder-blue-800 font-medium"
-                maxLength={25}
-                placeholder="Здесь писать теги..."
-                onChange={(e: React.FormEvent<HTMLInputElement>) => {
-                  if (e.currentTarget.value.length > 26) {
-                    e.preventDefault();
-                    e.currentTarget.classList.add('text-blue-900');
-                  } else {
-                    e.currentTarget.classList.remove('text-blue-900');
-                    if (/\s/.test(e.currentTarget.value)) {
-                      const dTags: string[] = newTags.slice();
-                      e.currentTarget.value.match(/[^ -][^ ]*/g)?.map((value: string, i: number) => {
-                        const tag = value.charAt(0).toUpperCase() + value.substring(1).toLowerCase();
-                        if (!/^\./.test(tag)) {
-                          if (!/\.{2,}/.test(tag)) {
-                            if (!/\/|\\/.test(tag)) {
-                              if (!/^__.*__/.test(tag)) {
-                                let canPush: boolean = true;
-                                for (let checker = 0; checker < dTags.length; checker++) {
-                                  if (tag === dTags[checker]) {
-                                    canPush = false;
-                                  }
-                                }
-                                if (canPush) {
-                                  dTags.push(tag);
-                                }
-                              } else {
-                                errorCreate(
-                                  setError,
-                                  `Ошибка: не может начинаться и заканчиваться с нижних подчёркиваний (__)`
-                                );
-                              }
-                            } else {
-                              errorCreate(setError, `Ошибка: не может содержать слэши (/ \\)`);
-                            }
-                          } else {
-                            errorCreate(setError, `Ошибка: не может содержать двоеточие (..)`);
-                          }
-                        } else {
-                          errorCreate(setError, `Ошибка: не может содержать точку в начале (.)`);
-                        }
-                      });
-                      dTags.splice(30, dTags.length - 30);
-                      setNewTags([...dTags]);
-                      e.currentTarget.value = '';
-                    }
-                  }
-                }}
-                onKeyUp={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                  if (e.key === ' ' || e.code === 'Space') {
-                    e.currentTarget.value = '';
-                  }
-                }}
-              />
-            </div>
-          ) : (
-            <></>
-          )}
-          <div className="flex flex-wrap">{renderTags}</div>
         </div>
       </div>
       <div className="w-full h-4"></div>
