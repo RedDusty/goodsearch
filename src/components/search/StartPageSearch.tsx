@@ -51,7 +51,7 @@ const StartPageSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateA
     );
   });
   return (
-    <div className="w-4/5 md:w-2/4 min-w-min m-4 ">
+    <div className="w-full md:w-2/4 min-w-min m-4 ">
       <div className="bg-blue-100 shadow-xl mx-4 box-content flex justify-center items-center rounded-2xl relative z-10">
         <input
           type="text"
@@ -87,7 +87,7 @@ const StartPageSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateA
           <div className="absolute bg-blue-200 p-2 pt-4 flex flex-wrap rounded-bl-2xl rounded-br-2xl z-0">
             {renderTagList}
             <button
-              className="btn-pr-small mt-1"
+              className="btn-pr px-2 py-1 h-6 mt-1 box-content"
               onClick={() => {
                 setTagList([] as albumType[]);
               }}

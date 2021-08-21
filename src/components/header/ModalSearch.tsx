@@ -90,7 +90,7 @@ const ModalSearch: React.FC<{ setSearchCards: React.Dispatch<React.SetStateActio
           <div className="absolute bg-blue-200 p-2 pt-4 flex flex-wrap rounded-bl-2xl rounded-br-2xl z-0">
             {renderTagList}
             <button
-              className="btn-pr-small mt-1"
+              className="btn-pr px-2 py-1 h-6 mt-1 box-content"
               onClick={() => {
                 setTagList([] as albumType[]);
               }}

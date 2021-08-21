@@ -67,7 +67,7 @@ function AllCards() {
           {order === 'desc' ? 'Сначала новые' : 'Сначала старые'}
         </button>
       </div>
-      <div className="flex flex-wrap w-full justify-center">{renderCards}</div>
+      <div className="flex flex-wrap w-full justify-center mt-4">{renderCards}</div>
       {isLoadedCards ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
           <p className="font-medium">Нет новых карт.</p>

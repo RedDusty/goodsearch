@@ -13,7 +13,7 @@ const StartPage: React.FC<{
   const user: userType = useContext(UserContext);
   let renderAccess: JSX.Element = <></>;
   let renderUpload: JSX.Element = (
-    <NavLink to="/upload" className="btn-pr ml-4">
+    <NavLink to="/upload" className="btn-pr ml-2 ss:ml-4 items-center">
       Загрузить
     </NavLink>
   );
@@ -28,19 +28,22 @@ const StartPage: React.FC<{
       );
     }
     renderProfile = (
-      <div className="flex items-center text-lg font-medium rounded-lg mt-4 cursor-default">
-        <img src={user.photoURL} alt="" className="w-10 h-10 profileImage" />
-        <p className="ml-2">{user.displayName}</p>
-      </div>
-    );
-    renderAccess = (
       <>
-        {renderUpload}
-        <button className="btn-pr ml-4" onClick={logOut}>
-          Выйти
-        </button>
+        <div className="flex items-center mt-4">
+          <NavLink to={`/profile/${user.uid}`} className="btn-pr ml-4">
+            Профиль
+          </NavLink>
+          <button className="btn-pr ml-4" onClick={logOut}>
+            Выйти
+          </button>
+        </div>
+        <div className="flex items-center text-lg font-medium rounded-lg mt-4 cursor-default">
+          <img src={user.photoURL} alt="" className="w-10 h-10 profileImage" />
+          <p className="ml-2">{user.displayName}</p>
+        </div>
       </>
     );
+    renderAccess = <>{renderUpload}</>;
   }
   if (!user.uid) {
     renderAccess = (

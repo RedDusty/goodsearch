@@ -4,7 +4,7 @@ import 'firebase/storage';
 import 'firebase/firestore';
 import 'firebase/database';
 
-export async function uploadImage(file: fileType, tags: string[], user: userType, anon: boolean) {
+export async function uploadImage(file: fileType, tags: string[], user: userType) {
   let lastCardId: number = 0;
   let imageURL: string = '';
 
@@ -60,16 +60,6 @@ export async function uploadImage(file: fileType, tags: string[], user: userType
 
   const getMetadata = await storageRef.child(tags[0] + '/' + file.name + '_' + lastCardId + '.webp').getMetadata();
 
-  let anonUser = anon
-    ? {
-        userName: 'Anon',
-        userPhoto: 'Anon'
-      }
-    : {
-        userName: user.displayName || 'Unknown',
-        userPhoto: user.photoURL || ''
-      };
-
   // create document
 
   await firebase
@@ -84,8 +74,8 @@ export async function uploadImage(file: fileType, tags: string[], user: userType
       id: lastCardId,
       infoTags: tags,
       infoTime: new Date().getTime(),
-      userName: anonUser.userName,
-      userPhoto: anonUser.userPhoto,
+      userName: user.displayName,
+      userPhoto: user.photoURL,
       userUID: user.uid
     } as cardType);
 
@@ -117,23 +107,36 @@ export async function getLoginUser(user: userType) {
         cardsID: userData.cardsID,
         displayName: user.displayName,
         photoURL: user.photoURL,
-        uid: user.uid
+        uid: user.uid,
+        disName: userData.disName,
+        disTag: userData.disTag,
+        cardsIDFav: userData.cardsIDFav === undefined ? [] : userData.cardsIDFav
       } as userType;
     } else {
-      await firebase.firestore().collection('users').doc(user.uid).set({
-        banned: false,
-        displayName: user.displayName,
-        photoURL: user.photoURL,
-        uid: user.uid,
-        cardsID: []
-      });
+      await firebase
+        .firestore()
+        .collection('users')
+        .doc(user.uid)
+        .set({
+          banned: false,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          uid: user.uid,
+          cardsID: [],
+          disName: undefined,
+          disTag: undefined,
+          cardsIDFav: []
+        } as userType);
 
       return {
         banned: false,
         cardsID: [],
         displayName: user.displayName,
         photoURL: user.photoURL,
-        uid: user.uid
+        uid: user.uid,
+        disName: undefined,
+        disTag: undefined,
+        cardsIDFav: []
       } as userType;
     }
   } else {
@@ -142,10 +145,21 @@ export async function getLoginUser(user: userType) {
       cardsID: [],
       displayName: undefined,
       photoURL: undefined,
-      uid: undefined
+      uid: undefined,
+      disName: undefined,
+      disTag: undefined,
+      cardsIDFav: []
     } as userType;
   }
 }
+
+// export async function setDiscordUser(disName: string, disTag: string, uid: string) {
+//   await firebase
+//     .firestore()
+//     .collection('users')
+//     .doc(uid)
+//     .update({ disName, disTag } as userType);
+// }
 
 export async function getAlbums(limit: number, start: number | string, order: 'asc' | 'desc') {
   const albums: albumType[] = [];
@@ -408,4 +422,43 @@ export async function editTags(tags: string[], newTags: string[], card: cardType
       .doc(String(card.id))
       .update({ infoTags: newTags } as cardType);
   }
+}
+
+export async function getProfileCards(user: userType, type: 'fav' | 'all') {
+  const getUser = await firebase.firestore().collection('users').doc(user.uid).get();
+
+  const userInfo: userType = getUser.data() as userType;
+
+  let cardsArray: number[] = [];
+
+  if (type === 'all') cardsArray = userInfo.cardsID === undefined ? [] : userInfo.cardsID;
+
+  if (type === 'fav') cardsArray = userInfo.cardsIDFav === undefined ? [] : userInfo.cardsIDFav;
+
+  return cardsArray;
+}
+
+export async function setUserFav(card: cardType, user: userType, isFav: boolean) {
+  const userGet = await firebase.firestore().collection('users').doc(user.uid).get();
+
+  const userData: userType = userGet.data() as userType;
+
+  let favArr = userData.cardsIDFav === undefined ? [] : userData.cardsIDFav.slice();
+
+  if (!isFav) {
+    if (!favArr.includes(card.id)) {
+      favArr.push(card.id);
+    }
+  } else {
+    if (favArr.includes(card.id)) {
+      const indexOfEl = favArr.indexOf(card.id);
+      favArr.splice(indexOfEl, 1);
+    }
+  }
+
+  await firebase
+    .firestore()
+    .collection('users')
+    .doc(user.uid)
+    .update({ cardsIDFav: favArr } as userType);
 }

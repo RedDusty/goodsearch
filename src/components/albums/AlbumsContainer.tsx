@@ -74,7 +74,7 @@ function AlbumsContainer() {
           {order === 'desc' ? 'Сначала новые' : 'Сначала старые'}
         </button>
       </div>
-      <div className="flex flex-wrap w-full justify-center">{renderAlbums}</div>
+      <div className="flex flex-wrap w-full justify-center mt-4">{renderAlbums}</div>
       {isLoadedAlbums ? (
         <div className="p-4 bg-blue-200 text-blue-800 hover:bg-pink-200 hover:text-pink-800 w-min whitespace-nowrap mx-auto my-4 rounded-xl">
           <p className="font-medium">Нет новых альбомов.</p>

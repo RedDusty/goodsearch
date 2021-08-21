@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { editTags, getCard } from '../firebase';
+import { editTags, getCard, setUserFav } from '../firebase';
 import { cardType, tipsType, userType } from '../types';
 import { UserContext } from '../UserProvider';
 
@@ -35,6 +35,7 @@ const Card: React.FC<{
   const [newTags, setNewTags] = useState<string[]>([]);
   const [isEditTags, setEditTags] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
+  const [isFav, setFav] = useState<boolean>(user.cardsIDFav.includes(card.id));
 
   useEffect(() => {
     const getter = async () => {
@@ -97,6 +98,19 @@ const Card: React.FC<{
         >
           <p className="text-blue-800 hover:text-pink-700 focus:text-pink-800 p-2 font-medium text-lg">Скачать</p>
         </a>
+        <button
+          className={`btn-pr ml-4 ${
+            isFav
+              ? 'bg-yellow-300 hover:bg-yellow-200 focus:bg-yellow-500 text-black hover:text-black focus:text-black'
+              : ''
+          }`}
+          onClick={() => {
+            setFav(!isFav);
+            setUserFav(card, user, isFav);
+          }}
+        >
+          {isFav ? 'В избранном' : 'В избранное'}
+        </button>
       </div>
       <div className="w-full sm:w-auto sm:my-4 sm:mx-4 md:mx-6 lg:mx-8 xl:mx-10 2xl:mx-12 sm:px-2 flex flex-col items-center mt-4">
         <div
@@ -175,16 +189,10 @@ const Card: React.FC<{
           <></>
         )}
         <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
-        {card.userPhoto !== 'Anon' ? (
-          <>
-            <img src={card.userPhoto} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />
-            <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-              {(card.userName.length || 0) >= 15 ? card.userName.substring(0, 15) + '...' : card.userName}
-            </p>
-          </>
-        ) : (
-          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Anon</p>
-        )}
+        <img src={card.userPhoto} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />
+        <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+          {(card.userName.length || 0) >= 15 ? card.userName.substring(0, 15) + '...' : card.userName}
+        </p>
         <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
       </div>
       <div className="flex flex-col w-full md:w-4/5">

@@ -40,19 +40,22 @@ const ModalHeader: React.FC<{
       );
     }
     renderProfile = (
-      <div className="flex items-center text-lg font-medium rounded-lg ml-2 my-4 cursor-default">
-        <img src={user.photoURL} alt="" className="w-10 h-10 profileImage" />
-        <p className="ml-2">{user.displayName}</p>
-      </div>
-    );
-    renderAccess = (
       <>
-        {renderUpload}
-        <button className="btn-pr ml-4 bg-blue-300" onClick={logOut}>
-          Выйти
-        </button>
+        <div className="flex items-center mt-4">
+          <NavLink to={`/profile/${user.uid}`} className="btn-pr ml-4 bg-blue-300">
+            Профиль
+          </NavLink>
+          <button className="btn-pr ml-4 bg-blue-300" onClick={logOut}>
+            Выйти
+          </button>
+        </div>
+        <div className="flex items-center text-lg font-medium rounded-lg ml-2 my-4 cursor-default">
+          <img src={user.photoURL} alt="" className="w-10 h-10 profileImage" />
+          <p className="ml-2">{user.displayName}</p>
+        </div>
       </>
     );
+    renderAccess = <>{renderUpload}</>;
   }
   if (!user.uid) {
     renderAccess = (
@@ -78,6 +81,7 @@ const ModalHeader: React.FC<{
           className="btn-pr ml-2 bg-blue-300"
           to={'/'}
           onClick={() => {
+            setIsOpen(false);
             document.title = 'GoodSearch';
           }}
         >
@@ -94,26 +98,28 @@ const ModalHeader: React.FC<{
           Показать все карты
         </NavLink>
       </div>
-      <div className="flex mt-4">{renderAccess}</div>
-      <button
-        className="bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white font-medium text-lg px-2 py-0.5 mx-4 mt-2 rounded-md max-w-xs"
-        onClick={() => {
-          setTips({
-            start: false,
-            uName: false,
-            uTags: false,
-            upload: false,
-            zoomImage: false
-          });
-          localStorage.setItem('startTip', 'false');
-          localStorage.setItem('uploadTip', 'false');
-          localStorage.setItem('uTagsTip', 'false');
-          localStorage.setItem('uNameTip', 'false');
-          localStorage.setItem('zoomImageTip', 'false');
-        }}
-      >
-        Сбросить подсказки
-      </button>
+      <div className="flex mt-4">
+        {renderAccess}
+        <button
+          className="btn-pr bg-green-400 hover:bg-green-600 focus:bg-green-800 text-white hover:text-white focus:text-white ml-4"
+          onClick={() => {
+            setTips({
+              start: false,
+              uName: false,
+              uTags: false,
+              upload: false,
+              zoomImage: false
+            });
+            localStorage.setItem('startTip', 'false');
+            localStorage.setItem('uploadTip', 'false');
+            localStorage.setItem('uTagsTip', 'false');
+            localStorage.setItem('uNameTip', 'false');
+            localStorage.setItem('zoomImageTip', 'false');
+          }}
+        >
+          Сбросить подсказки
+        </button>
+      </div>
       {!user.uid ? (
         <p className="mt-4 w-full sm:w-auto bg-pink-200 hover:bg-pink-300 text-pink-800 hover:text-pink-900 px-4 py-2 text-lg font-medium sm:rounded-lg cursor-default">
           Включите Cookies, если не можете войти на сайт!

@@ -26,7 +26,6 @@ const Preview: React.FC<{
   const [error, setError] = useState<string>('');
   const user: userType = useContext(UserContext);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [isAnon, setAnon] = useState<boolean>(false);
   const renderTags: JSX.Element[] = tags.map((tag: string, i: number) => {
     return (
       <div className="flex bg-blue-50 p-1 items-center rounded-lg mx-2 my-1" key={i}>
@@ -84,7 +83,7 @@ const Preview: React.FC<{
             if (tags.length <= 30 && tags.length >= 1) {
               if (!isLoading) {
                 setLoading(true);
-                uploadImage(previewFile, tags, user, isAnon);
+                uploadImage(previewFile, tags, user);
               } else {
                 errorCreate(setError, 'Ошибка: карта загружается...');
               }
@@ -167,36 +166,10 @@ const Preview: React.FC<{
       </div>
       <div className="w-full my-4 flex flex-col sm:flex-row items-center justify-evenly">
         <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
-        <div className="flex items-center">
-          <button
-            className="btn-pr cursor-pointer flex items-center"
-            onClick={() => {
-              setAnon(!isAnon);
-            }}
-          >
-            <p className="font-medium">Анонимно?</p>
-            <div className="ml-2 fill-current">
-              {isAnon ? (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                  <path d="M23.954 21.03l-9.184-9.095 9.092-9.174-2.832-2.807-9.09 9.179-9.176-9.088-2.81 2.81 9.186 9.105-9.095 9.184 2.81 2.81 9.112-9.192 9.18 9.1z" />
-                </svg>
-              )}
-            </div>
-          </button>
-        </div>
-        <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
-        {isAnon ? <></> : <img src={user.photoURL} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />}
-        {isAnon ? (
-          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default text-blue-700">Анон</p>
-        ) : (
-          <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
-            {(user.displayName?.length || 0) >= 15 ? user.displayName?.substring(0, 15) + '...' : user.displayName}
-          </p>
-        )}
+        <img src={user.photoURL} alt="" className="w-10 h-10 profileImage cursor-default mt-2 sm:mt-0" />
+        <p className="ml-2 whitespace-nowrap text-lg font-medium cursor-default">
+          {(user.displayName?.length || 0) >= 15 ? user.displayName?.substring(0, 15) + '...' : user.displayName}
+        </p>
         <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
         <p className="text-blue-900">{tags.length}/30</p>
         <div className="w-full border-t border-solid border-blue-700 mx-2 hidden sm:block"></div>
@@ -207,8 +180,6 @@ const Preview: React.FC<{
         }`}
       >
         <div className="flex justify-center items-center flex-col">
-          {isAnon ? <p>И чего ты стесняешься? ( ͡° ͜ʖ ͡°)</p> : <p>Загрузи анонимно и никто не узнает тебя!</p>}
-          <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
           <p>Минимум 1 тег и максимум 30. 25 символов на каждый.</p>
           <div className="border-t border-solid border-green-900 w-full h-0 my-1"></div>
           <p>Это обязательное поле.</p>

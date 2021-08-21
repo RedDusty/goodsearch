@@ -13,6 +13,7 @@ const AlbumsContainer = lazy(() => import('./components/albums/AlbumsContainer')
 const Upload = lazy(() => import('./components/Upload'));
 const Card = lazy(() => import('./components/Card'));
 const NotFound = lazy(() => import('./components/NotFound'));
+const Profile = lazy(() => import('./components/profile/ProfileContainer'));
 
 function App() {
   const [searchCards, setSearchCards] = useState<string>('');
@@ -34,10 +35,20 @@ function App() {
         searchCards={searchCards}
         setTips={setTips}
       />
-      <Suspense fallback={<LoadingIcon size={500} />}>
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center w-full h-full">
+            <LoadingIcon size={500} />
+          </div>
+        }
+      >
         <Switch>
           <Route exact path="/">
             <StartPage setSearchCards={setSearchCards} setTips={setTips} tips={tips} />
+          </Route>
+          <Route exact path="/profile/:uid">
+            <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />
+            <Profile />
           </Route>
           <Route exact path="/search">
             <HeaderContainer setIsOpen={setIsOpen} isOpen={isOpen} />

@@ -25,8 +25,11 @@ export type userType = {
   displayName: string | undefined;
   photoURL: string | undefined;
   uid: string | undefined;
+  disName: string | undefined;
+  disTag: string | undefined;
   banned: boolean;
   cardsID: number[];
+  cardsIDFav: number[];
 };
 
 export type albumType = {
