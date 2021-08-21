@@ -462,3 +462,13 @@ export async function setUserFav(card: cardType, user: userType, isFav: boolean)
     .doc(user.uid)
     .update({ cardsIDFav: favArr } as userType);
 }
+
+export async function getUserFav(card: cardType, user: userType) {
+  const userGet = await firebase.firestore().collection('users').doc(user.uid).get();
+
+  const userData: userType = userGet.data() as userType;
+
+  let favArr = userData.cardsIDFav === undefined ? [] : userData.cardsIDFav.slice();
+
+  return favArr.includes(card.id);
+}

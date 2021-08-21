@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { editTags, getCard, setUserFav } from '../firebase';
+import { editTags, getCard, getUserFav, setUserFav } from '../firebase';
 import { cardType, tipsType, userType } from '../types';
 import { UserContext } from '../UserProvider';
 
@@ -39,13 +39,20 @@ const Card: React.FC<{
 
   useEffect(() => {
     const getter = async () => {
-      const cardInfo = await getCard(window.location.pathname.substring(6));
-      setCard(cardInfo);
-      setTags(cardInfo.infoTags);
+      let cardInfo: cardType = card;
+
+      if (card.userUID.length === 0 || card.userUID === '') {
+        cardInfo = await getCard(window.location.pathname.substring(6));
+        setCard(cardInfo);
+        setTags(cardInfo.infoTags);
+      }
+      if (user.uid) {
+        setFav(await getUserFav(cardInfo, user));
+      }
     };
 
     getter();
-  }, [window.location.pathname.substring(6)]);
+  }, [window.location.pathname.substring(6), user]);
 
   document.title = card.infoTags[0] || 'Loading...';
 
